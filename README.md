@@ -1,16 +1,42 @@
 [![Build Status](https://travis-ci.org/andela/ah-robotics.svg?branch=develop)](https://travis-ci.org/andela/ah-robotics)
 [![Coverage Status](https://coveralls.io/repos/github/andela/ah-robotics/badge.svg?branch=develop)](https://coveralls.io/github/andela/ah-robotics?branch=develop)
 
-Authors Haven - A Social platform for the creative at heart.
-=======
+# Authors Haven - A Social platform for the creative at heart.
 
 ## Vision
+
 Create a community of like minded authors to foster inspiration and innovation
 by leveraging the modern web.
 
 ---
 
+## Database configuration
+
+Follow these steps to configure the PostgreSQL database engine locally.
+
+1. Install PostgreSQL module: `brew install postgresql`
+2. Create a new user: `CREATE USER sample_username WITH PASSWORD 'sample_password';`
+3. Grant privileges to the user: `GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO sample_username;`
+4. Install the app dependencies: `pip install -r requirements.txt`
+5. Create a database: `CREATE DATABASE sample_database_name WITH OWNER sample_username;`
+6. Create a .env as guided by the .env_example and add the following configuration variables
+
+```
+
+DB_NAME='database_name'
+DB_USER='created_username'
+DB_PASS='password_for_created_user'
+DB_HOST='host_name_eg_localhost'
+DB_PORT='port_number_eg_5432'
+```
+
+7. Source .env: `source .env`
+8. Run migrations:
+   `python manage.py makemigrations`
+   `python manage.py migrate`
+
 ## API Spec
+
 The preferred JSON object to be returned by the API should be structured as follows:
 
 ### Users (for authentication)
@@ -26,7 +52,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   }
 }
 ```
+
 ### Profile
+
 ```source-json
 {
   "profile": {
@@ -37,7 +65,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   }
 }
 ```
+
 ### Single Article
+
 ```source-json
 {
   "article": {
@@ -59,7 +89,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   }
 }
 ```
+
 ### Multiple Articles
+
 ```source-json
 {
   "articles":[{
@@ -99,7 +131,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   "articlesCount": 2
 }
 ```
+
 ### Single Comment
+
 ```source-json
 {
   "comment": {
@@ -116,7 +150,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   }
 }
 ```
+
 ### Multiple Comments
+
 ```source-json
 {
   "comments": [{
@@ -134,7 +170,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   "commentsCount": 1
 }
 ```
+
 ### List of Tags
+
 ```source-json
 {
   "tags": [
@@ -143,7 +181,9 @@ The preferred JSON object to be returned by the API should be structured as foll
   ]
 }
 ```
+
 ### Errors and Status Codes
+
 If a request fails any validations, expect errors in the following format:
 
 ```source-json
@@ -155,16 +195,16 @@ If a request fails any validations, expect errors in the following format:
   }
 }
 ```
+
 ### Other status codes:
+
 401 for Unauthorized requests, when a request requires authentication but it isn't provided
 
 403 for Forbidden requests, when a request may be valid but the user doesn't have permissions to perform the action
 
 404 for Not found requests, when a resource can't be found to fulfill the request
 
-
-Endpoints:
-----------
+## Endpoints:
 
 ### Authentication:
 
@@ -393,7 +433,3 @@ No additional parameters required
 ### Get Tags
 
 `GET /api/tags`
-
-
-
-
