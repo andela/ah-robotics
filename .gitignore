@@ -93,4 +93,5 @@ ENV/
 db.sqlite3
 
 # Vsode editor files
-/.vscode
+.vscode/
+
