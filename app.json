@@ -1,0 +1,21 @@
+{
+  "name": "ah-robotics",
+  "scripts": {
+  },
+  "env": {
+    "DISABLE_COLLECTSTATIC": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "stack": "heroku-18",
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
