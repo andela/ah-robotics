@@ -1,0 +1,22 @@
+language: python
+
+python:
+  - "3.6"
+
+# env variables
+env:
+  - DJANGO_SETTINGS_MODULE="authors.settings"
+
+# install project dependencies
+install:
+  - pip install -r requirements.txt
+
+# make migrations and run tests
+script:
+  - python manage.py makemigrations
+  - python manage.py migrate
+  - python manage.py test
+
+# produce coverage report
+after_success:
+  - coveralls
