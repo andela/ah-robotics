@@ -5,6 +5,21 @@
   "env": {
     "DISABLE_COLLECTSTATIC": {
       "required": true
+    },
+    "DB_NAME":{
+      "required": true
+    },
+    "DB_HOST":{
+      "required": true
+    },
+    "DB_USER":{
+      "required": true
+    },
+    "DB_PASS":{
+      "required": true
+    },
+    "DJANGO_SETTINGS_MODULE":{
+      "required": true
     }
   },
   "formation": {
