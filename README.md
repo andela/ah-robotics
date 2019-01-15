@@ -76,11 +76,13 @@ by leveraging the modern web.
   6. Create a .env as guided by the .env_example and add the following configuration variables
 
       ```source-json
+      source env/bin/activate
       export DB_NAME="database_name"
       export DB_USER="sample_username"
       export DB_PASS="sample_password"
       export DB_HOST="host_name_eg_localhost"
       export DB_PORT="port_number_eg_5432"
+      export TIME_DELTA="30"
       ```
 
   7. Source .env to set the configuration variables:
