@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/andela/ah-robotics.svg?branch=develop)](https://travis-ci.org/andela/ah-robotics)
 [![Coverage Status](https://coveralls.io/repos/github/andela/ah-robotics/badge.svg?branch=develop)](https://coveralls.io/github/andela/ah-robotics?branch=develop)
 
-# Authors Haven - A Social platform for the creative at heart.
+# Authors Haven - A Social platform for the creative at heart
 
 ## Vision
 
@@ -10,30 +10,114 @@ by leveraging the modern web.
 
 ---
 
-## Database configuration
+## Application local setup
 
-Follow these steps to configure the PostgreSQL database engine locally.
+### Technologies used to build and run application
 
-1. Install PostgreSQL module: `brew install postgresql`
-2. Create a new user: `CREATE USER sample_username WITH PASSWORD 'sample_password';`
-3. Grant privileges to the user: `GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO sample_username;`
-4. Install the app dependencies: `pip install -r requirements.txt`
-5. Create a database: `CREATE DATABASE sample_database_name WITH OWNER sample_username;`
-6. Create a .env as guided by the .env_example and add the following configuration variables
+1. [Brew](https://brew.sh/)
+2. [Python](https://www.python.org/downloads/)
+3. [Django](https://www.djangoproject.com/)
+4. [DjangoRestFrameWork](https://www.django-rest-framework.org/)
+5. [Virtualenv](https://virtualenv.pypa.io/en/latest/installation/)
+6. [PostgreSQL](https://www.codementor.io/engineerapart/getting-started-with-postgresql-on-mac-osx-are8jcopb)
 
-```
+### Getting Started
 
-DB_NAME='database_name'
-DB_USER='created_username'
-DB_PASS='password_for_created_user'
-DB_HOST='host_name_eg_localhost'
-DB_PORT='port_number_eg_5432'
-```
+1. Open terminal and clone the repo:
 
-7. Source .env: `source .env`
-8. Run migrations:
-   `python manage.py makemigrations`
-   `python manage.py migrate`
+    `git clone https://github.com/andela/ah-robotics.git`
+
+2. Change directory into the cloned repository.
+
+    `cd ah-robotics`
+
+3. Checkout to the Chore branch
+
+    `git checkout ch-update-readme-163092870`
+
+4. Create a virtual environment by running the following commands:
+
+    `virtualenv -p python3 env`
+
+    or
+
+    `python3 -m virtualenv env`
+
+5. Once the virtual environment has been setup, activate it and install the packages required by the project,
+    these are contained in the file named `requirements.txt`
+
+      `source env/bin/activate`
+
+      `pip install -r requirements.txt`
+
+### setting up the database
+
+> Ensure PostgreSQL is installed and is running psql, follow these steps to create a new user and a database which will be used in the application.
+
+  1. Start the postgres database server using the command:
+  
+      `pg_ctl -D /usr/local/var/postgres start`
+
+  2. Run psql interactive terminal
+
+      `psql postgres`
+
+  3. Create a new user:
+
+      `CREATE USER sample_username WITH PASSWORD 'sample_password';`
+
+  4. Grant privileges to the user:
+
+      `ALTER USER sample_username CREATEDB;`
+
+  5. Create a database:
+
+      `CREATE DATABASE sample_database_name WITH OWNER sample_username;`
+  6. Create a .env as guided by the .env_example and add the following configuration variables
+
+      ```source-json
+      export DB_NAME="database_name"
+      export DB_USER="sample_username"
+      export DB_PASS="sample_password"
+      export DB_HOST="host_name_eg_localhost"
+      export DB_PORT="port_number_eg_5432"
+      ```
+
+  7. Source .env to set the configuration variables:
+
+      `source .env`
+  8. Run migrations to create the tables in the database:
+
+      ```source-json
+      python manage.py makemigrations
+      python manage.py migrate
+      ```
+
+---
+
+### Run The Server
+
+Once everything has been setup, to run the application run the command:
+
+   `python manage.py runserver`
+
+The application can be accessed in the url <http://localhost:8000>
+
+---
+
+## Testing
+
+To run the application run the command:
+
+   `python manage.py test`
+
+To determine test coverage on the application:
+
+   `coverage run --source=authors/ manage.py test`
+
+   `coverage report`
+
+---
 
 ## API Spec
 
@@ -196,7 +280,7 @@ If a request fails any validations, expect errors in the following format:
 }
 ```
 
-### Other status codes:
+### Other status codes
 
 401 for Unauthorized requests, when a request requires authentication but it isn't provided
 
@@ -204,9 +288,9 @@ If a request fails any validations, expect errors in the following format:
 
 404 for Not found requests, when a resource can't be found to fulfill the request
 
-## Endpoints:
+## Endpoints
 
-### Authentication:
+### Authentication
 
 `POST /api/users/login`
 
@@ -225,7 +309,7 @@ No authentication required, returns a User
 
 Required fields: `email`, `password`
 
-### Registration:
+### Registration
 
 `POST /api/users`
 
