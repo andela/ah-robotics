@@ -80,3 +80,28 @@ class TestRegister(TestBase):
         self.assertEqual(response.data['errors']
                          ['username'][0], "This field is required.")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_password_should_not_be_less_than_8_characters(self):
+        """
+        test whether the user is successfully registered
+        """
+        response = self.register_user(data=self.user_short_password)
+        response_message = response.data[
+            "errors"]["password"][0]
+        self.assertEqual(
+            response_message,
+            "Ensure this field has at least 8 characters.")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_that_password_is_alphanumeric(self):
+        """
+        test whether password entered has alphanumeric characters
+        """
+        self.user["user"]["password"] = "rtyhughg"
+        response = self.register_user(data=self.user_non_alphanumeric_password)
+        response_message = response.data[
+            "errors"]["password"][0]
+        self.assertEqual(
+            response_message,
+            "Password must have letters, numbers and special characters")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

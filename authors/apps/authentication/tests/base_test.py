@@ -18,7 +18,7 @@ class TestBase(APITestCase):
             "user": {
                 "username": "Jacob",
                 "email": "jake@jake.jake",
-                "password": "jakejake"
+                "password": "manu232#$$"
             }
         }
 
@@ -30,7 +30,7 @@ class TestBase(APITestCase):
             "user": {
                 "username": "Jacob",
                 "email": "jakejakejake",
-                "password": "jakejake"
+                "password": "manu232#$$"
             }
         }
 
@@ -38,7 +38,7 @@ class TestBase(APITestCase):
             "user": {
                 "username": "Jacob",
                 "email": "jake@jake.jake",
-                "password": "jakejake"
+                "password": "manu232#$$"
             }
         }
 
@@ -46,21 +46,21 @@ class TestBase(APITestCase):
             "user": {
                 "username": "Jacob",
                 "email": "jake1@jake.jake",
-                "password": "jakejake"
+                "password": "manu232#$$"
             }
         }
         self.user_no_email = {
             "user": {
                 "username": "Jacob",
                 "email": "",
-                "password": "jakejake"
+                "password": "manu232#$$"
             }
         }
         self.user_no_username = {
             "user": {
                 "username": "",
                 "email": "jake@jake.com",
-                "password": "jakejake"
+                "password": "manu232#$$"
             }
         }
         self.user_no_password = {
@@ -68,6 +68,22 @@ class TestBase(APITestCase):
                 "username": "jake",
                 "email": "jake@jake.com",
                 "password": ""
+            }
+        }
+
+        self.user_short_password = {
+            'user': {
+                'username': 'meshack',
+                'email': 'meshack@gmail.com',
+                'password': 'pass'
+            }
+        }
+
+        self.user_non_alphanumeric_password = {
+            'user': {
+                'username': 'meshack',
+                'email': 'meshack@gmail.com',
+                'password': 'passnjsnffsfn'
             }
         }
 

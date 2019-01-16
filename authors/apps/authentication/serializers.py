@@ -19,12 +19,24 @@ class RegistrationSerializer(serializers.ModelSerializer):
     )
     token = serializers.CharField(max_length=128, read_only=True)
 
+    #Ensure the password has alphanumeric and special characters
     def validate_password(self, data):
         if not re.match(
             r'^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).*',
                 data):
             raise serializers.ValidationError(
                 "Password must have letters, numbers and special characters")
+
+    def validate_username(self, data):
+        if re.match(r'^[0-9]+$', data):
+            raise serializers.ValidationError(
+                "Username cannot contain numbers only")
+    
+        if re.match(r'^[^A-Za-z0-9]*$', data):
+            raise serializers.ValidationError(
+                "Username cannot contain special characters only")
+        return data
+    
 
     # The client should not be able to send a token along with a registration
     # request. Making `token` read-only handles that for us.
