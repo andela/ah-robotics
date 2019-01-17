@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/andela/ah-robotics.svg?branch=develop)](https://travis-ci.org/andela/ah-robotics)
 [![Coverage Status](https://coveralls.io/repos/github/andela/ah-robotics/badge.svg?branch=develop)](https://coveralls.io/github/andela/ah-robotics?branch=develop)
+[![Maintainability](https://api.codeclimate.com/v1/badges/fe82140229df3317bb50/maintainability)](https://codeclimate.com/github/andela/ah-robotics/maintainability)
 
 # Authors Haven - A Social platform for the creative at heart
 
