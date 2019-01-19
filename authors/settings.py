@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from config import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -73,7 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # Backend Key loaders for social auth's
+                # Backend Key loaders for social auths
                 'social_django.contex_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
@@ -93,9 +94,9 @@ AUTHENTICATION_BACKENDS = (
     # Twitter OAUTH
     'social_core.backends.twitter.TwitterOAuth'
     # Social OAUTH2
-    'rest_framework_social_oauth2.backend.DjangoOAuth2'
+    'rest_framework_social_oauth2.backends.DjangoOAuth2'
 
-    'django.contrib.auth.backends.ModelBackends'
+    'django.contrib.auth.backends.ModelBackend'
 )
 
 WSGI_APPLICATION = 'authors.wsgi.application'
