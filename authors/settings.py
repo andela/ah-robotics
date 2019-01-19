@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
 
     'django_inlinecss',
-
+    # Social AUTH APPS
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
@@ -78,13 +78,30 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
+                # Backend Key loaders for social auth's
                 'social_django.contex_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.open_id.OpenIdAuth',
+    # Google OAUTH2
+    'social_core.backends.google.GoogleOpenId',
+    'social_core.backends.google.GoogleOAuth2'
+    'social_core.backends.google.GoogleOAuth'
+    # Facebook OAUTH2
+    'social_core.backends.facebook.FacebookAppOAuth2'
+    'social_core.backends.facebook.FacebookOAuth2'
+    # Twitter OAUTH
+    'social_core.backends.twitter.TwitterOAuth'
+    # Social OAUTH2
+    'rest_framework_social_oauth2.backend.DjangoOAuth2'
+
+    'django.contrib.auth.backends.ModelBackends'
+)
 
 WSGI_APPLICATION = 'authors.wsgi.application'
 
