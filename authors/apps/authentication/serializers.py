@@ -1,6 +1,9 @@
 from django.contrib.auth import authenticate
-
+from django.conf import settings
+import jwt
+from rest_framework import exceptions
 from rest_framework import serializers
+from django.contrib.auth.tokens import default_token_generator
 
 from .models import User
 
@@ -19,7 +22,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     )
     token = serializers.CharField(max_length=128, read_only=True)
 
-    #Ensure the password has alphanumeric and special characters
+    # Ensure the password has alphanumeric and special characters
     def validate_password(self, data):
         if not re.match(
             r'^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).*',
@@ -31,12 +34,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if re.match(r'^[0-9]+$', data):
             raise serializers.ValidationError(
                 "Username cannot contain numbers only")
-    
+
         if re.match(r'^[^A-Za-z0-9]*$', data):
             raise serializers.ValidationError(
                 "Username cannot contain special characters only")
         return data
-    
 
     # The client should not be able to send a token along with a registration
     # request. Making `token` read-only handles that for us.
@@ -168,3 +170,27 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(max_length=255)
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(
+        max_length=128,
+        min_length=8,
+    )
+
+    confirm_password = serializers.CharField(
+        max_length=128,
+        min_length=8,
+    )
+
+    # Ensure the password has alphanumeric and special characters
+    def validate_password(self, data):
+        if not re.match(
+            r'^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).*',
+                data):
+            raise serializers.ValidationError(
+                "Password must have letters, numbers and special characters")

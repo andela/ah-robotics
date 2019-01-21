@@ -1,0 +1,56 @@
+*{
+    font-family: Baskerville, "Baskerville Old Face", "Goudy Old Style", Garamond, "Times New Roman", serif;
+    font-weight: 100;
+}
+header {
+    background: #1e88e5;
+    text-align: center;
+    height: 80px;
+    color: #ffffff;
+    z-index: 1.5em;
+}
+h2{
+    padding-top: 1.7%;
+}
+footer{
+    background: #1e88e5;
+    text-align: center;
+    height: 50px;
+    color: #ffffff;
+    z-index: 1.5em;
+}
+h4{
+    margin-top: 10%;
+    padding-top: 1.2%;
+    font-family: Baskerville, "Baskerville Old Face", "Goudy Old Style", Garamond, "Times New Roman", serif;
+}
+h3{
+    margin-top: -10px;
+    font-weight: 300;
+    background: #e3f2fd;
+}
+
+button{
+padding: 0;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+  color: #ffffff;
+  background-color: #1e88e5;
+  border: solid 1px transparent;
+  border-radius: 4px;
+  margin: 2px 0;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  padding: 0.5em 1em;
+  margin-left: 45%;
+  margin-left: -80px;
+  margin-top: 5%;
+}
+p{
+    font-size: 18px;
+    text-align: center;
+}

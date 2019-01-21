@@ -84,6 +84,10 @@ by leveraging the modern web.
       export DB_HOST="host_name_eg_localhost"
       export DB_PORT="port_number_eg_5432"
       export TIME_DELTA="30"
+      export EMAIL_HOST="smtp.gmail.com"
+      export EMAIL_HOST_USER="testmail@mail.com"
+      export EMAIL_HOST_PASSWORD="pass21234"
+      export EMAIL_PORT=587
       ```
 
   7. Source .env to set the configuration variables:
