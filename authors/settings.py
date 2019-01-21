@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-from config import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -75,7 +74,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 # Backend Key loaders for social auths
-                'social_django.contex_processors.backends',
+                'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
         },
@@ -86,18 +85,26 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.open_id.OpenIdAuth',
     # Google OAUTH2
     'social_core.backends.google.GoogleOpenId',
-    'social_core.backends.google.GoogleOAuth2'
-    'social_core.backends.google.GoogleOAuth'
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.google.GoogleOAuth',
     # Facebook OAUTH2
-    'social_core.backends.facebook.FacebookAppOAuth2'
-    'social_core.backends.facebook.FacebookOAuth2'
+    'social_core.backends.facebook.FacebookAppOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
     # Twitter OAUTH
-    'social_core.backends.twitter.TwitterOAuth'
+    'social_core.backends.twitter.TwitterOAuth',
     # Social OAUTH2
-    'rest_framework_social_oauth2.backends.DjangoOAuth2'
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
 
-    'django.contrib.auth.backends.ModelBackend'
+    'django.contrib.auth.backends.ModelBackend',
 )
+
+SOCIAL_AUTH_FACEBOOK_KEY = os.getenv('SOCIAL_AUTH_FACEBOOK_KEY')
+SOCIAL_AUTH_FACEBOOK_SECRET = os.getenv('SOCIAL_AUTH_FACEBOOK_SECRET')
+
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+    'fields': 'id, name, email'
+}
 
 WSGI_APPLICATION = 'authors.wsgi.application'
 
