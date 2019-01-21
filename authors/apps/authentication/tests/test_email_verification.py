@@ -17,4 +17,5 @@ class TestEmailVerification(TestBase):
         token = response.data['user_info']['token']
         self.verification_link = "/api/v1/users/verify/{}".format(token)
         resp = self.client.get(self.verification_link)
+        self.assertEqual(resp.data, 'Email verification successful.')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)

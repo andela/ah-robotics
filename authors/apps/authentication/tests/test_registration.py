@@ -10,7 +10,8 @@ class TestRegister(TestBase):
         """Test to register a user."""
 
         response = self.register_user(data=self.user)
-        self.assertEqual(response.data['email'], self.user['user']['email'])
+        self.assertEqual(response.data['user_info']['email'], 'jake@jake.jake')
+        self.assertEqual(response.data["message"], "User registered successfully. Check your email to activate your account.")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_register_user_wrong_email_format(self):
