@@ -11,6 +11,12 @@ class TestBase(APITestCase):
 
     def setUp(self):
         """Initialize variables and methods used by the tests."""
+
+        self.client = APIClient()
+        self.login_url = reverse('authentication:login_url')
+        self.register_url = reverse('authentication:register_url')
+        self.resend_url = reverse('authentication:resend_email_url')
+
         self.user = {
             "user": {
                 "username": "lolisme",
@@ -45,6 +51,12 @@ class TestBase(APITestCase):
                 "username": "Jacob",
                 "email": "jakejakejake",
                 "password": "manu232#$$"
+            }
+        }
+
+        self.user_resend = {
+            "user":{
+                "email": "jake@jake.jake"
             }
         }
 

@@ -89,7 +89,6 @@ class ResendAPIView(CreateAPIView):
 
         email = user['email']
         user_retrieve = User.objects.get(email=email)
-        print(user_retrieve)
         username = user_retrieve.username
         details = {
             'email': email,
