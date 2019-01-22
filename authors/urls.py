@@ -16,12 +16,16 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+
+from authors.apps.authentication.views import FacebookLogin, TwitterLogin, GoogleLogin
 from .swagger_docs import schema_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(('authors.apps.authentication.urls',
                              'authentication'), namespace='authentication')),
+    path('api/v1/auth/facebook/', FacebookLogin.as_view(), name='fb_login'),
+    path('api/v1/auth/twitter/', TwitterLogin.as_view(), name='twitter_login'),
+    path('api/v1/auth/google/', GoogleLogin.as_view(), name='google_login'),
     path('api/v1/docs/', schema_view),
-    path('api/v1/auth/', include('rest_framework_social_oauth2.urls')),
 ]

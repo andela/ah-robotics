@@ -3,6 +3,10 @@ language: python
 python:
   - "3.6"
 
+# use postgres version 9.4
+addons:
+  postgresql: "9.4"
+
 # env variables
 env:
   - DJANGO_SETTINGS_MODULE="authors.settings"

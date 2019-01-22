@@ -1,6 +1,12 @@
 import jwt
 import os
 import re
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
+from rest_auth.registration.views import SocialLoginView
+from rest_auth.social_serializers import TwitterLoginSerializer
 from rest_framework import status
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -213,7 +219,7 @@ class ForgotPasswordAPIview(APIView):
         from_email, to_email, subject = from_email, email, subject
         # render password reset template with a dynamic value
         html = render_to_string('password_reset_template.html', {
-                                'reset_password_link': reset_link})
+            'reset_password_link': reset_link})
         # strip html tags from the html content
         text_content = strip_tags(html)
 
@@ -281,3 +287,21 @@ class ResetPasswordAPIView(APIView):
         mail.send()
         response = {"message": "Password updated successfully"}
         return Response(response, status=status.HTTP_200_OK)
+
+
+class FacebookLogin(SocialLoginView):
+    """Facebook Authentication Endpoint"""
+    adapter_class = FacebookOAuth2Adapter
+
+
+class TwitterLogin(SocialLoginView):
+    """Twitter Authentication Endpoint"""
+    serializer_class = TwitterLoginSerializer
+    adapter_class = TwitterOAuthAdapter
+
+
+class GoogleLogin(SocialLoginView):
+    """Google Authentication Endpoint"""
+    adapter_class = GoogleOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = 'http://localhost:8000/complete/google-oauth2/'
