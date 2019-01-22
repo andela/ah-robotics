@@ -19,8 +19,10 @@ from .serializers import (
     ForgotPasswordSerializer, ResetPasswordSerializer
 )
 
-from authors.settings import EMAIL_HOST_USER, SECRET_KEY
+from authors.settings import SECRET_KEY
 from .models import User
+from .utils import send_email
+
 
 class RegistrationAPIView(APIView):
     # Allow any user (authenticated or not) to hit this endpoint.
@@ -42,38 +44,71 @@ class RegistrationAPIView(APIView):
         email = serializer.data['email']
         username = serializer.data['username']
         token = serializer.data['token']
-
-        sender = "vitalispaul48@gmail.com"
-        current_site = get_current_site(request)
-        verification_link = "http://" + current_site.domain + '/api/v1/users/verify/{}'.format(token)
         subject = "Verification email"
-        message = render_to_string('email_verification.html', {
-            'verification_link': verification_link,
-            'title': subject,
+
+        details = {
+            'email': email,
             'username': username
-        })
-        body_content = strip_tags(message)
-        msg = EmailMultiAlternatives(subject, body_content, sender, to=[email])
-        msg.attach_alternative(message, "text/html")
-        msg.send()
+        }
+        send_email(request, details, token, subject)
 
         response_message = {
             "message": "User registered successfully. Check your email to activate your account.",
-            "user_info": serializer.data
-        }
+            "user_info": serializer.data}
 
         return Response(response_message, status=status.HTTP_201_CREATED)
 
 
 class VerifyAPIView(CreateAPIView):
     serializer_class = UserSerializer
-    def get(self, request, token):
-        email = jwt.decode(token, SECRET_KEY)['email']
-        user = User.objects.get(email=email)
-        user.is_verified = True
-        user.save()
 
-        return Response("Email verification successful.")
+    def get(self, request, token):
+        try:
+            email = jwt.decode(token, SECRET_KEY)['email']
+            user = User.objects.get(email=email)
+            if user.is_verified:
+                return Response(
+                    "Email already verified.",
+                    status=status.HTTP_400_BAD_REQUEST)
+            user.is_verified = True
+            user.save()
+            return Response(
+                "Email verification successful.",
+                status=status.HTTP_200_OK)
+        except Exception:
+            return Response(
+                "Token has expired.",
+                status=status.HTTP_403_FORBIDDEN)
+
+
+class ResendAPIView(CreateAPIView):
+    serializer_class = UserSerializer
+
+    def post(self, request):
+        user = request.data.get('user', {})
+
+        email = user['email']
+        user_retrieve = User.objects.get(email=email)
+        print(user_retrieve)
+        username = user_retrieve.username
+        details = {
+            'email': email,
+            'username': username
+        }
+        token = jwt.encode({
+            'email': email
+        }, settings.SECRET_KEY).decode()
+        subject = "Resend verification"
+        if user_retrieve.is_verified:
+            return Response(
+                {
+                    "message": "User already verified."
+                }, status=status.HTTP_403_FORBIDDEN)
+        else:
+            send_email(request, details, token, subject)
+            return Response({
+                "message": "Verification email resent successfully."
+            }, status=status.HTTP_200_OK)
 
 
 class LoginAPIView(APIView):
