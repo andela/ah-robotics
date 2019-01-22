@@ -1,5 +1,6 @@
 import jwt
 import os
+import re
 from rest_framework import status
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -87,8 +88,24 @@ class ResendAPIView(CreateAPIView):
     def post(self, request):
         user = request.data.get('user', {})
 
-        email = user['email']
-        user_retrieve = User.objects.get(email=email)
+        email = (user['email']).strip()
+        email_format = re.compile(
+            r"(^[a-zA-Z0-9_.-]+@[a-zA-Z-]+\.[.a-zA-Z-]+$)")
+        if len(email) < 1:
+            return Response({
+                "message": "Email cannot be blank."
+            }, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match(email_format, email):
+            return Response({
+                "message": "Invalid email."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user_retrieve = User.objects.get(email=email)
+        except Exception:
+            return Response({
+                "message": "User does not exist."
+            }, status=status.HTTP_400_BAD_REQUEST)
         username = user_retrieve.username
         details = {
             'email': email,
@@ -103,6 +120,7 @@ class ResendAPIView(CreateAPIView):
                 {
                     "message": "User already verified."
                 }, status=status.HTTP_403_FORBIDDEN)
+
         else:
             send_email(request, details, token, subject)
             return Response({

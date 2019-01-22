@@ -9,7 +9,8 @@ class TestEmailVerification(TestBase):
     def test_an_email_is_sent_on_registration(self):
         """register a user"""
         response = self.register_user(data=self.user)
-        self.assertEqual(response.data['message'],
+        self.assertEqual(
+            response.data['message'],
             'User registered successfully. Check your email to activate your account.')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
