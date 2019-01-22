@@ -42,7 +42,25 @@ class TestEmailVerification(TestBase):
         self.client.get(self.verification_link)
         res = self.client.post(self.resend_url,self.user_resend, format='json')
         self.assertEqual(res.data['message'],'User already verified.')
+    
+    def test_resend_empty_email(self):
+        """This is the test for request an activation mail with empty email."""
+
+        res = self.client.post(self.resend_url,self.user_resend_blank, format='json')
+        self.assertEqual(
+            res.data['message'],
+            "Enter a valid email and do not leave field blank.")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
         
+    def test_resend_bad_email(self):
+        """This is the test for request an activation mail with unregistered email."""
 
+        res = self.client.post(self.resend_url,self.user_resend_bad, format='json')
+        self.assertEqual(
+            res.data['message'],
+            "User does not exist.")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+        
 

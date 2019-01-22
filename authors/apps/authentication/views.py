@@ -91,13 +91,9 @@ class ResendAPIView(CreateAPIView):
         email = (user['email']).strip()
         email_format = re.compile(
             r"(^[a-zA-Z0-9_.-]+@[a-zA-Z-]+\.[.a-zA-Z-]+$)")
-        if len(email) < 1:
+        if len(email) < 1 or not re.match(email_format, email):
             return Response({
-                "message": "Email cannot be blank."
-            }, status=status.HTTP_400_BAD_REQUEST)
-        if not re.match(email_format, email):
-            return Response({
-                "message": "Invalid email."
+                "message": "Enter a valid email and do not leave field blank."
             }, status=status.HTTP_400_BAD_REQUEST)
 
         try:
