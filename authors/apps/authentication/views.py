@@ -54,7 +54,8 @@ class RegistrationAPIView(APIView):
         send_email(request, details, token, subject)
 
         response_message = {
-            "message": "User registered successfully. Check your email to activate your account.",
+            "message": "User registered successfully."
+            " Check your email to activate your account.",
             "user_info": serializer.data}
 
         return Response(response_message, status=status.HTTP_201_CREATED)
@@ -110,12 +111,12 @@ class ResendAPIView(CreateAPIView):
         token = jwt.encode({
             'email': email
         }, settings.SECRET_KEY).decode()
-        subject = "Resend verification"
+        subject = "Resent verification"
         if user_retrieve.is_verified:
             return Response(
                 {
                     "message": "User already verified."
-                }, status=status.HTTP_403_FORBIDDEN)
+                }, status=status.HTTP_400_BAD_REQUEST)
 
         else:
             send_email(request, details, token, subject)

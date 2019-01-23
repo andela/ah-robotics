@@ -55,17 +55,17 @@ class TestBase(APITestCase):
         }
 
         self.user_resend = {
-            "user":{
+            "user": {
                 "email": "jake@jake.jake"
             }
         }
         self.user_resend_blank = {
-            "user":{
+            "user": {
                 "email": ""
             }
         }
         self.user_resend_bad = {
-            "user":{
+            "user": {
                 "email": "ioo@dn.com"
             }
         }
