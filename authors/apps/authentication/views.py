@@ -13,6 +13,7 @@ from django.http import HttpResponse
 from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
 from django.contrib.sites.shortcuts import get_current_site
+from rest_framework import exceptions
 
 from .renderers import UserJSONRenderer
 from .serializers import (

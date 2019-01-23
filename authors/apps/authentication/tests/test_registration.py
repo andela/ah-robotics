@@ -10,7 +10,7 @@ class TestRegister(TestBase):
         """Test to register a user."""
 
         response = self.register_user(data=self.user)
-        self.assertEqual(response.data['user_info']['email'], 'jake@jake.jake')
+        self.assertEqual(response.data['user_info']['email'], "lolisme2016@gmail.com")
         self.assertEqual(
             response.data["message"],
             "User registered successfully. "
