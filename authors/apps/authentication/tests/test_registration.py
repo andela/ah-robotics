@@ -10,7 +10,7 @@ class TestRegister(TestBase):
         """Test to register a user."""
 
         response = self.register_user(data=self.user)
-        self.assertEqual(response.data['email'], 'jake@jake.jake')
+        self.assertEqual(response.data['email'], self.user['user']['email'])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_register_user_wrong_email_format(self):
@@ -24,15 +24,16 @@ class TestRegister(TestBase):
 
     def test_register_duplicate_email(self):
         """Test for registration of a duplicate email."""
-
         response = self.register_user(data=self.user)
         response_duplicate_url = self.register_user(data=self.user)
         self.assertEqual(
             response_duplicate_url.data['errors']['email'][0],
             "user with this email already exists.")
+            
         self.assertEqual(response_duplicate_url.status_code,
                          status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
 
     def test_register_duplicate_username(self):
         """Test for registration of a duplicate username."""

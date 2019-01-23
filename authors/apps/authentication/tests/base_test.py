@@ -1,5 +1,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
+import jwt
+from django.conf import settings
 
 
 class TestBase(APITestCase):
@@ -9,18 +11,30 @@ class TestBase(APITestCase):
 
     def setUp(self):
         """Initialize variables and methods used by the tests."""
+        self.user = {
+            "user": {
+                "username": "lolisme",
+                "email": "lolisme2016@gmail.com",
+                "password": "manu232#$$"
+            }
+        }
+        self.user1 = {
+            "user": {
+                "username": "roboticstia",
+                "email": "roboticstia@gmail.com",
+                "password": "manu232#$$"
+            }
+        }
 
         self.client = APIClient()
         self.login_url = reverse('authentication:login_url')
         self.register_url = reverse('authentication:register_url')
+        self.forgot_password_url = reverse('authentication:forgot_password')
 
-        self.user = {
-            "user": {
-                "username": "Jacob",
-                "email": "jake@jake.jake",
-                "password": "manu232#$$"
-            }
-        }
+        self.password_reset_token = self.get_password_reset_token()
+        self.reset_password_url = reverse(
+            'authentication:reset_password',
+            kwargs={"token": self.password_reset_token})
 
         self.empty_payload = {
             "user": {}
@@ -37,7 +51,7 @@ class TestBase(APITestCase):
         self.username = {
             "user": {
                 "username": "Jacob",
-                "email": "jake@jake.jake",
+                "email": "lolisme2016@gmail.com",
                 "password": "manu232#$$"
             }
         }
@@ -70,6 +84,10 @@ class TestBase(APITestCase):
                 "password": ""
             }
         }
+        self.reset_password_payload = {
+            "password": "Lolisme@2016",
+            "confirm_password": "Lolisme@2016"
+        }
 
         self.user_short_password = {
             'user': {
@@ -87,9 +105,38 @@ class TestBase(APITestCase):
             }
         }
 
+        self.user_reset_password = {
+            "email": "lolisme2016@gmail.com",
+            "password": "Lolisme@2016",
+            "confirm_password": "Lolisme@2016"
+        }
+
     def register_user(self, data):
         return self.client.post(
             self.register_url,
             data,
             format='json'
         )
+
+    def forgot_password_req(self, data):
+        return self.client.post(
+            self.forgot_password_url,
+            data=data,
+            format="json")
+
+    def get_password_reset_token(self):
+        response = self.register_user(self.user1)
+        email = response.data.get('email')
+        token = jwt.encode({
+            'email': email,
+            'type': 'reset password'
+        },
+            settings.SECRET_KEY
+        ).decode()
+        return token
+
+    def reset_password_req(self, data):
+        return self.client.put(
+            self.reset_password_url,
+            data=data,
+            format="json")
