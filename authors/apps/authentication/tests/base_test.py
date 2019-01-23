@@ -144,9 +144,9 @@ class TestBase(APITestCase):
 
     def get_password_reset_token(self):
         response = self.register_user(self.user1)
-        email = response.data.get('email')
+        payload = response.data.get('user_info')
         token = jwt.encode({
-            'email': email,
+            'email': payload['email'],
             'type': 'reset password'
         },
             settings.SECRET_KEY
