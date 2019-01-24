@@ -126,6 +126,11 @@ class TestBase(APITestCase):
         self.user_resend_bad = {
             "user": {
                 "email": "ioo@dn.com"
+            }}
+        self.user_login = {
+            "user": {
+                "email": "lolisme2016@gmail.com",
+                "password": "manu232#$$"
             }
         }
 
@@ -156,5 +161,11 @@ class TestBase(APITestCase):
     def reset_password_req(self, data):
         return self.client.put(
             self.reset_password_url,
+            data=data,
+            format="json")
+
+    def user_login_req(self, data):
+        return self.client.post(
+            self.login_url,
             data=data,
             format="json")
