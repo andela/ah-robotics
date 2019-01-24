@@ -2,6 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 import jwt
 from django.conf import settings
+import json
 
 
 class TestBase(APITestCase):
@@ -18,6 +19,9 @@ class TestBase(APITestCase):
                 "password": "manu232#$$"
             }
         }
+        self.user_bio = {
+                "bio": "You are a peculiar man."
+            }
         self.user_login_details = {
             "user": {
                 "email": "lolisme2016@gmail.com",
@@ -37,6 +41,7 @@ class TestBase(APITestCase):
         self.register_url = reverse('authentication:register_url')
         self.profiles_url = reverse('profiles:profiles')
         
+        
 
 
     def register_user(self, data):
@@ -53,17 +58,16 @@ class TestBase(APITestCase):
         ).data
     
     def edit_profile(self,username):
-        self.one_profile_url = reverse(
-            'profiles:username', 
-            kwargs={"username":username}
-        )
-        return self.client.put(self.one_profile_url)
+        url =self.profiles_url +'{}'.format(username)
+        return self.client.put(
+            url, 
+            self.user_bio, content_type="application/json")
     
     def authorize_user(self,user_details):
         # register a user
-        self.register_user(data=user_details)
-        token = self.login_a_user(data=user_details)['token']
-        self.client.credentials(HTTP_AUTHORIZATION= 'Bearer '+token)
+        self.register_user(data=self.user)
+        payload = self.login_a_user(data=user_details)
+        self.client.credentials(HTTP_AUTHORIZATION= 'token '+ payload['token'])
 
     # def forgot_password_req(self, data):
     #     return self.client.post(

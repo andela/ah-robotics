@@ -12,9 +12,9 @@ class ProfilesTestCase(TestBase):
 
     def test_view_a_user_profile(self):
         """View one user's profile"""
-
-        self.authorize_user(self.user_login_details)
-        response = self.client.get(self.one_profile_url)
+        self.authorize_user(self.user)
+        url = self.profiles_url+'{}'.format(self.user['user']['username']) + "/"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 

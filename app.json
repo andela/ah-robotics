@@ -35,6 +35,15 @@
     },
     "PASSWORD_RESET_URL":{
       "required": true
+    },
+    "CLOUDINARY_NAME":{
+      "required":true
+    },
+    "CLOUDINARY_KEY":{
+      "required":true
+    },
+    "CLOUDINARY_SECRET":{
+      "required":true
     }
   },
   "formation": {
