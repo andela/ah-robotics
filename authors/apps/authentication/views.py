@@ -1,10 +1,12 @@
-import jwt
-import os
 import re
-from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
+import os
+import jwt
+
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
+
 from rest_auth.registration.views import SocialLoginView
 from rest_auth.social_serializers import TwitterLoginSerializer
 from rest_framework import status
@@ -13,11 +15,15 @@ from rest_framework import status, exceptions
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from allauth.socialaccount.providers.facebook.views import \
+    FacebookOAuth2Adapter
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
+
 from authors.apps.core import client
-from django.conf import settings
-from django.template.loader import render_to_string
 from django.http import HttpResponse
-from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
 from django.contrib.sites.shortcuts import get_current_site
 from rest_framework import exceptions
@@ -231,7 +237,8 @@ class ForgotPasswordAPIview(APIView):
         mail.send()
 
         response = {
-            "message": "Kindly use the link sent to your email to reset your password"}
+            "message": "Kindly use the link sent to "
+                       "your email to reset your password"}
 
         return Response(response, status=status.HTTP_200_OK)
 

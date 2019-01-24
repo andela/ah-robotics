@@ -32,4 +32,8 @@ urlpatterns = [
         'users/resend-email/',
         ResendAPIView.as_view(),
         name="resend_email_url"),
+    path('account/forgot_password/',
+         ForgotPasswordAPIview.as_view(), name="forgot_password"),
+    path('account/reset_password/<token>',
+         ResetPasswordAPIView.as_view(), name="reset_password"),
 ]
