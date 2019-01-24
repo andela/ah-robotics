@@ -187,8 +187,6 @@ class ForgotPasswordAPIview(APIView):
     """
     This view captures user email and
     sends password reset link to user email if the user with email exists
-    The reset link contains the client url(front-end password reset url)
-    and a jwt token as an argument
     """
 
     permission_classes = (AllowAny,)
@@ -196,7 +194,6 @@ class ForgotPasswordAPIview(APIView):
 
     def post(self, request):
         email = request.data.get('email')
-        client_url = request.data.get('client_url')
         user = User.objects.filter(email=email).first()
 
         if user is None:

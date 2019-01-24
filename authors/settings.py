@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     'authors.apps.core',
     'rest_framework_swagger',
     'django_inlinecss',
+    'cloudinary',
+    'authors.apps.profiles',
 ]
 
 MIDDLEWARE = [
@@ -171,16 +173,28 @@ REST_FRAMEWORK = {
 }
 
 
+APPEND_SLASH = False
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_USE_TLS = True
 EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
 AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
 SITE_ID = 1
+
+
+
+CLOUDINARY = {
+   'cloud_name': os.getenv('CLOUDINARY_NAME'),
+   'api_key': os.getenv('CLOUDINARY_KEY'),
+   'api_secret': os.getenv('CLOUDINARY_SECRET'),
+   'secure': True
+}
 

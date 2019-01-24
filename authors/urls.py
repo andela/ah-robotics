@@ -30,4 +30,7 @@ urlpatterns = [
     path('api/v1/auth/twitter/', TwitterLogin.as_view(), name='twitter_login'),
     path('api/v1/auth/google/', GoogleLogin.as_view(), name='google_login'),
     path('api/v1/docs/', schema_view),
+    path('api/v1/', include(('authors.apps.profiles.urls',
+                             'profile'), namespace='profiles')),
 ]
+
