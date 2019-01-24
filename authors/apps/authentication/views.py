@@ -1,22 +1,29 @@
+import jwt
+import os
+import re
 from rest_framework import status
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from authors.apps.core import client
-from .models import User
-import jwt
 from django.conf import settings
 from django.template.loader import render_to_string
-import os
 from django.http import HttpResponse
 from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
+from django.contrib.sites.shortcuts import get_current_site
+from rest_framework import exceptions
+
 from .renderers import UserJSONRenderer
 from .serializers import (
     LoginSerializer, RegistrationSerializer, UserSerializer,
     ForgotPasswordSerializer, ResetPasswordSerializer
 )
+
+from authors.settings import SECRET_KEY
+from .models import User
+from .utils import send_email
 
 
 class RegistrationAPIView(APIView):
@@ -36,7 +43,87 @@ class RegistrationAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        email = serializer.data['email']
+        username = serializer.data['username']
+        token = serializer.data['token']
+        subject = "Verification email"
+
+        details = {
+            'email': email,
+            'username': username
+        }
+        send_email(request, details, token, subject)
+
+        response_message = {
+            "message": "User registered successfully."
+            " Check your email to activate your account.",
+            "user_info": serializer.data}
+
+        return Response(response_message, status=status.HTTP_201_CREATED)
+
+
+class VerifyAPIView(CreateAPIView):
+    serializer_class = UserSerializer
+
+    def get(self, request, token):
+        try:
+            email = jwt.decode(token, SECRET_KEY)['email']
+            user = User.objects.get(email=email)
+            if user.is_verified:
+                return Response(
+                    "Email already verified.",
+                    status=status.HTTP_400_BAD_REQUEST)
+            user.is_verified = True
+            user.save()
+            return Response(
+                "Email verification successful.",
+                status=status.HTTP_200_OK)
+        except Exception:
+            return Response(
+                "Token has expired.",
+                status=status.HTTP_403_FORBIDDEN)
+
+
+class ResendAPIView(CreateAPIView):
+    serializer_class = UserSerializer
+
+    def post(self, request):
+        user = request.data.get('user', {})
+
+        email = (user['email']).strip()
+        email_format = re.compile(
+            r"(^[a-zA-Z0-9_.-]+@[a-zA-Z-]+\.[.a-zA-Z-]+$)")
+        if len(email) < 1 or not re.match(email_format, email):
+            return Response({
+                "message": "Enter a valid email and do not leave field blank."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user_retrieve = User.objects.get(email=email)
+        except Exception:
+            return Response({
+                "message": "User does not exist."
+            }, status=status.HTTP_400_BAD_REQUEST)
+        username = user_retrieve.username
+        details = {
+            'email': email,
+            'username': username
+        }
+        token = jwt.encode({
+            'email': email
+        }, settings.SECRET_KEY).decode()
+        subject = "Resent verification"
+        if user_retrieve.is_verified:
+            return Response(
+                {
+                    "message": "User already verified."
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+        else:
+            send_email(request, details, token, subject)
+            return Response({
+                "message": "Verification email resent successfully."
+            }, status=status.HTTP_200_OK)
 
 
 class LoginAPIView(APIView):

@@ -1,0 +1,24 @@
+{% load inlinecss %}
+{% inlinecss 'css/email.css' %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Authors Haven</title>
+  </head>
+  <body>
+      <div class="mail_container">
+        <div class="mail_body">
+          <img src="https://res.cloudinary.com/dgfzfsgsm/image/upload/v1548161458/ahlogo.png" alt="">
+            <p>Hey {{ username }},</p>
+            <p>Your registration on <a href="https://ah-robotics-staging.herokuapp.com/" >Authors Haven</a> was received. Click the link below to confirm registration</p>
+            <a class="mail_button" href="{{verification_link}}">Click here</a>
+        </div>
+      </div>
+      <div class="mail_footer">
+        <p>Authors Haven &copy; 2019</p>
+      </div>
+  </body>
+</html>
+{% endinlinecss %}

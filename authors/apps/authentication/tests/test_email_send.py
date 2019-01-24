@@ -36,7 +36,7 @@ class ForgotPasswordTestCase(TestBase):
         """
         register_user = self.register_user(data=self.user)
         self.assertEqual(
-            register_user.data['email'], self.user['user']['email'])
+            register_user.data['user_info']['email'], self.user['user']['email'])
         self.assertEqual(register_user.status_code, status.HTTP_201_CREATED)
         response = self.forgot_password_req(
             data={"email": self.user['user']['email']})

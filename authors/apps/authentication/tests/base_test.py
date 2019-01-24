@@ -29,8 +29,8 @@ class TestBase(APITestCase):
         self.client = APIClient()
         self.login_url = reverse('authentication:login_url')
         self.register_url = reverse('authentication:register_url')
+        self.resend_url = reverse('authentication:resend_email_url')
         self.forgot_password_url = reverse('authentication:forgot_password')
-
         self.password_reset_token = self.get_password_reset_token()
         self.reset_password_url = reverse(
             'authentication:reset_password',
@@ -45,6 +45,12 @@ class TestBase(APITestCase):
                 "username": "Jacob",
                 "email": "jakejakejake",
                 "password": "manu232#$$"
+            }
+        }
+
+        self.user_resend = {
+            "user":{
+                "email": "lolisme2016@gmail.com"
             }
         }
 
@@ -111,6 +117,18 @@ class TestBase(APITestCase):
             "confirm_password": "Lolisme@2016"
         }
 
+        self.user_resend_blank = {
+            "user": {
+                "email": ""
+            }
+        }
+
+        self.user_resend_bad = {
+            "user": {
+                "email": "ioo@dn.com"
+            }
+        }
+
     def register_user(self, data):
         return self.client.post(
             self.register_url,
@@ -126,9 +144,9 @@ class TestBase(APITestCase):
 
     def get_password_reset_token(self):
         response = self.register_user(self.user1)
-        email = response.data.get('email')
+        payload = response.data.get('user_info')
         token = jwt.encode({
-            'email': email,
+            'email': payload['email'],
             'type': 'reset password'
         },
             settings.SECRET_KEY

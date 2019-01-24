@@ -29,6 +29,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
                 data):
             raise serializers.ValidationError(
                 "Password must have letters, numbers and special characters")
+        return data
 
     def validate_username(self, data):
         if re.match(r'^[0-9]+$', data):
@@ -194,3 +195,4 @@ class ResetPasswordSerializer(serializers.Serializer):
                 data):
             raise serializers.ValidationError(
                 "Password must have letters, numbers and special characters")
+        return data

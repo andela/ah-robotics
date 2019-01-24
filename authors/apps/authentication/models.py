@@ -87,6 +87,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # The `USERNAME_FIELD` property tells us which field we will use to log in.
     # In this case, we want that to be the email field.
+
+    is_verified = models.BooleanField(default=False)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
@@ -134,4 +137,4 @@ class User(AbstractBaseUser, PermissionsMixin):
                 minutes=int(os.getenv('TIME_DELTA')))},
             settings.SECRET_KEY
         )
-        return token
+        return token.decode('utf-8')
