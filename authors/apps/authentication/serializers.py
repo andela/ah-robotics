@@ -1,13 +1,9 @@
+import re
+
 from django.contrib.auth import authenticate
-from django.conf import settings
-import jwt
-from rest_framework import exceptions
 from rest_framework import serializers
-from django.contrib.auth.tokens import default_token_generator
 
 from .models import User
-
-import re
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

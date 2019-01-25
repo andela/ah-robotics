@@ -1,28 +1,37 @@
-import jwt
 import os
 import re
+
+import jwt
+from allauth.socialaccount.providers.facebook.views import \
+    FacebookOAuth2Adapter
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
+
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
+from rest_auth.registration.views import SocialLoginView
+from rest_auth.social_serializers import TwitterLoginSerializer
+
+from rest_framework import exceptions
 from rest_framework import status
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from authors.apps.core import client
-from django.conf import settings
-from django.template.loader import render_to_string
-from django.http import HttpResponse
-from django.core.mail import EmailMultiAlternatives
-from django.utils.html import strip_tags
-from django.contrib.sites.shortcuts import get_current_site
-from rest_framework import exceptions
 
+from authors.apps.core import client
+from authors.settings import SECRET_KEY
+
+from .models import User
 from .renderers import UserJSONRenderer
 from .serializers import (
     LoginSerializer, RegistrationSerializer, UserSerializer,
     ForgotPasswordSerializer, ResetPasswordSerializer
 )
-
-from authors.settings import SECRET_KEY
-from .models import User
 from .utils import send_email
 
 
@@ -213,7 +222,7 @@ class ForgotPasswordAPIview(APIView):
         from_email, to_email, subject = from_email, email, subject
         # render password reset template with a dynamic value
         html = render_to_string('password_reset_template.html', {
-                                'reset_password_link': reset_link})
+            'reset_password_link': reset_link})
         # strip html tags from the html content
         text_content = strip_tags(html)
 
@@ -224,7 +233,8 @@ class ForgotPasswordAPIview(APIView):
         mail.send()
 
         response = {
-            "message": "Kindly use the link sent to your email to reset your password"}
+            "message": "Kindly use the link sent to "
+                       "your email to reset your password"}
 
         return Response(response, status=status.HTTP_200_OK)
 
@@ -281,3 +291,21 @@ class ResetPasswordAPIView(APIView):
         mail.send()
         response = {"message": "Password updated successfully"}
         return Response(response, status=status.HTTP_200_OK)
+
+
+class FacebookLogin(SocialLoginView):
+    """Facebook Authentication Endpoint"""
+    adapter_class = FacebookOAuth2Adapter
+
+
+class TwitterLogin(SocialLoginView):
+    """Twitter Authentication Endpoint"""
+    serializer_class = TwitterLoginSerializer
+    adapter_class = TwitterOAuthAdapter
+
+
+class GoogleLogin(SocialLoginView):
+    """Google Authentication Endpoint"""
+    adapter_class = GoogleOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = os.getenv('GOOGLE_CALLBACK_URL')
