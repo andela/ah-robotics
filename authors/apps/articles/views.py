@@ -17,11 +17,16 @@ def article_not_found():
 
 
 def get_article(slug):
+    """
+    Returns article with the given slug if exists
+    or returns an exception if no article with slug exists
+    """
     try:
         article = Article.objects.get(slug=slug)
         return article
     except Exception:
         article_not_found()
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class ListCreateArticle(ListCreateAPIView):
@@ -31,6 +36,9 @@ class ListCreateArticle(ListCreateAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def post(self, request):
+        """
+        Create an article
+        """
         article = request.data.get('article', {})
         serializer = self.serializer_class(
             data=article, context={'request': request})
@@ -51,7 +59,9 @@ class RetrieveUpdateDeleteArticle(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadonly)
 
     def get(self, request, slug):
-        """Get article by using its slug value"""
+        """
+        Get article by using its slug value
+        """
         article = get_article(slug)
         if not article:
             article_not_found()
@@ -62,11 +72,7 @@ class RetrieveUpdateDeleteArticle(RetrieveUpdateDestroyAPIView):
         """
         Update an article
         """
-        try:
-            article = Article.objects.get(slug=slug)
-        except Exception:
-            article_not_found()
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        article = get_article(slug)
 
         article_data = request.data.get('article', {})
         serializer = self.serializer_class(
@@ -78,16 +84,12 @@ class RetrieveUpdateDeleteArticle(RetrieveUpdateDestroyAPIView):
             return Response(serializer.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
     def patch(self, request, slug):
         """
         Update selective details of an article
         """
-        try:
-            article = Article.objects.get(slug=slug)
-        except Exception:
-            article_not_found()
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        article = get_article(slug)
 
         article_data = request.data
         serializer = self.serializer_class(
