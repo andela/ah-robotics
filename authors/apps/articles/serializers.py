@@ -29,6 +29,7 @@ class ArticleSerializers(serializers.ModelSerializer):
         }
     )
 
+    image = serializers.ImageField(default=None)
     author = serializers.SerializerMethodField(read_only=True)
 
     def get_author(self, obj):
@@ -40,5 +41,5 @@ class ArticleSerializers(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ('slug', 'title', 'description',
-                  'body', 'created_at', 'updated_at',
+                  'body', 'image', 'created_at', 'updated_at',
                   'author')

@@ -3,6 +3,7 @@ from django.utils.text import slugify
 
 from authors.apps.authentication.models import User
 from authors.apps.core.models import TimestampMixin
+from cloudinary.models import CloudinaryField
 
 
 class Article(TimestampMixin, models.Model):
@@ -14,6 +15,7 @@ class Article(TimestampMixin, models.Model):
     title = models.CharField(max_length=500, blank=False)
     description = models.CharField(max_length=1000, blank=False)
     body = models.TextField(blank=False)
+    image = CloudinaryField(blank=True, null=True)
     author = models.ForeignKey(User,
                                related_name='article',
                                on_delete=models.CASCADE)

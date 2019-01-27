@@ -78,6 +78,27 @@ class RetrieveUpdateDeleteArticle(RetrieveUpdateDestroyAPIView):
             return Response(serializer.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def patch(self, request, slug):
+        """
+        Update selective details of an article
+        """
+        try:
+            article = Article.objects.get(slug=slug)
+        except Exception:
+            article_not_found()
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        article_data = request.data
+        serializer = self.serializer_class(
+            instance=article, data=article_data, partial=True)
+
+        if serializer.is_valid():
+            self.check_object_permissions(request, article)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, slug):
         """
