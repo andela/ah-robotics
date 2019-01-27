@@ -38,9 +38,10 @@ class ProfileItemView(APIView):
             'profile': serializer.data}, status=status.HTTP_200_OK)
 
     def patch(self, request, username):
-        # This method updates users to update their own profiles
-
-        # prevent users from updating other user's profiles
+        """ 
+        This method allows users to update their own profiles
+        A user is forbidden from updating other user's profiles
+        """
         if request.user.username != username:
             response = {
                 "message": "You don't have permission to edit this profile"}
