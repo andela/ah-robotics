@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import Article
-from authors.apps.profiles.serializers import ProfileSerializer
+from authors.apps.profiles.serializers import ProfileSerializer, AuthorSerializer
 from authors.apps.profiles.models import UserProfile
 
 
@@ -33,7 +33,7 @@ class ArticleSerializers(serializers.ModelSerializer):
 
     def get_author(self, obj):
         """Get the profile of the author of the article"""
-        serializer = ProfileSerializer(
+        serializer = AuthorSerializer(
             instance=UserProfile.objects.get(user=obj.author))
         return serializer.data
 
