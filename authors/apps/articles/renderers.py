@@ -10,7 +10,8 @@ class ArticleJsonRenderer(renderers.BaseRenderer):
     format = 'json'
     charset = 'utf-8'
 
-    def render(self, data, accepted_media_type=None, renderer_context=None):
+    def render(self, data, accepted_media_type=None,
+               renderer_context=None):
         # display a list of articles
         if isinstance(data, list):
             return json.dumps(

@@ -4,7 +4,7 @@ from django.utils.text import slugify
 from authors.apps.authentication.models import User
 from authors.apps.core.models import TimestampMixin
 
-# Create your models here.
+
 class Article(TimestampMixin, models.Model):
     """
     Model representation of an article
