@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import Article
-from authors.apps.profiles.serializers import ProfileSerializer, AuthorSerializer
+from authors.apps.profiles.serializers import AuthorSerializer
 from authors.apps.profiles.models import UserProfile
 
 
