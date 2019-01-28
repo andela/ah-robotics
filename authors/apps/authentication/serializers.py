@@ -6,7 +6,19 @@ from rest_framework import serializers
 from .models import User
 
 
-class RegistrationSerializer(serializers.ModelSerializer):
+class PasswordSerializer:
+    """Custom password serializer"""
+
+    def validate_password(self, data):
+        if not re.match(
+            r'^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).*',
+                data):
+            raise serializers.ValidationError(
+                "Password must have letters, numbers and special characters")
+        return data
+
+
+class RegistrationSerializer(serializers.ModelSerializer, PasswordSerializer):
     """Serializers registration requests and creates a new user."""
 
     # Ensure passwords are at least 8 characters long, no longer than 128
@@ -17,15 +29,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         write_only=True
     )
     token = serializers.CharField(max_length=128, read_only=True)
-
-    # Ensure the password has alphanumeric and special characters
-    def validate_password(self, data):
-        if not re.match(
-                r'^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).*',
-                data):
-            raise serializers.ValidationError(
-                "Password must have letters, numbers and special characters")
-        return data
 
     def validate_username(self, data):
         if re.match(r'^[0-9]+$', data):
@@ -51,7 +54,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 
-class LoginSerializer(serializers.Serializer):
+class LoginSerializer(serializers.Serializer, PasswordSerializer):
     email = serializers.CharField(max_length=255)
     username = serializers.CharField(max_length=255, read_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
@@ -173,7 +176,7 @@ class ForgotPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)
 
 
-class ResetPasswordSerializer(serializers.Serializer):
+class ResetPasswordSerializer(serializers.Serializer, PasswordSerializer):
     password = serializers.CharField(
         max_length=128,
         min_length=8,
@@ -183,12 +186,3 @@ class ResetPasswordSerializer(serializers.Serializer):
         max_length=128,
         min_length=8,
     )
-
-    # Ensure the password has alphanumeric and special characters
-    def validate_password(self, data):
-        if not re.match(
-                r'^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).*',
-                data):
-            raise serializers.ValidationError(
-                "Password must have letters, numbers and special characters")
-        return data
