@@ -1,5 +1,5 @@
-from rest_framework import renderers
 import json
+from rest_framework import renderers
 
 
 class ArticleJsonRenderer(renderers.BaseRenderer):
@@ -12,14 +12,18 @@ class ArticleJsonRenderer(renderers.BaseRenderer):
 
     def render(self, data, accepted_media_type=None,
                renderer_context=None):
-        # display a list of articles
+        """
+        Render a list of articles
+        """
         if isinstance(data, list):
             return json.dumps(
                 {'articles': data})
         else:
-            # triggered if result is an error
+            """
+            Render a single article or an error message
+            """
             error = data.get('detail')
             if error:
                 return json.dumps({'message': data})
-            # display single article details
+
             return json.dumps({'article': data})

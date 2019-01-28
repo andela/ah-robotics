@@ -1,8 +1,9 @@
 from rest_framework import serializers
 
-from .models import Article
 from authors.apps.profiles.serializers import AuthorSerializer
 from authors.apps.profiles.models import UserProfile
+
+from .models import Article
 
 
 class ArticleSerializers(serializers.ModelSerializer):
@@ -28,7 +29,6 @@ class ArticleSerializers(serializers.ModelSerializer):
             'required': 'article body cannot be empty'
         }
     )
-
     image = serializers.ImageField(default=None)
     author = serializers.SerializerMethodField(read_only=True)
 

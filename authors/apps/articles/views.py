@@ -5,10 +5,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 
+from authors.apps.core.permissions import IsOwnerOrReadonly
+
 from .models import Article
 from .serializers import ArticleSerializers
 from .renderers import ArticleJsonRenderer
-from authors.apps.core.permissions import IsOwnerOrReadonly
 
 
 def article_not_found():
