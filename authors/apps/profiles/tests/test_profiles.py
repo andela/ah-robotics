@@ -7,7 +7,6 @@ class ProfilesTestCase(TestBase):
 
     def test_that_a_user_profile_was_created_successfully(self):
         """Test whether the user profile is actually created"""
-        # register user
         response = self.register_user(data=self.user)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
