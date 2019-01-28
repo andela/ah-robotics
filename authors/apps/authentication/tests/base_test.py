@@ -26,11 +26,6 @@ class TestBase(APITestCase):
             }
         }
 
-        self.article = {
-            "title": "How Robotics collaborate",
-            "description": "A story of teamwork and synergy",
-            "body": "An insight into how the team works"
-        }
 
         self.client = APIClient()
         self.login_url = reverse('authentication:login_url')
@@ -41,8 +36,7 @@ class TestBase(APITestCase):
         self.reset_password_url = reverse(
             'authentication:reset_password',
             kwargs={"token": self.password_reset_token})
-        # self.post_article_url = reverse("articles:create")
-        # self.rate_article_url = reverse("articles:rate")
+        
 
         self.empty_payload = {
             "user": {}
@@ -177,7 +171,7 @@ class TestBase(APITestCase):
             self.reset_password_url,
             data=data,
             format="json")
-
+   
     def user_login_req(self, data):
         return self.client.post(
             self.login_url,

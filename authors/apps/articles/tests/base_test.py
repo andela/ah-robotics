@@ -26,10 +26,7 @@ class ArticleTestBase(APITestCase):
                 "title": "The One",
                 "description": "This is an article about the one",
                 "body": "The one is the one",
-<<<<<<< HEAD
                 "tagList": ["Obi", "Wan", "Kenobi"],
-=======
->>>>>>> 0530d9d... feat(articles): add more tests for article views
                 "author": 1}
         }
         self.article_empty_title = {
@@ -71,6 +68,10 @@ class ArticleTestBase(APITestCase):
         self.register_user(data=self.user)
         payload = self.login_a_user(data=user_details)
         self.client.credentials(HTTP_AUTHORIZATION='token ' + payload['token'])
+
+    def post_article_req(self, data):
+        """Create an article"""
+        return self.client.post(self.articles_url, data=data, format="json")
 
 
 class BaseReactionTestCase(ArticleTestBase):
