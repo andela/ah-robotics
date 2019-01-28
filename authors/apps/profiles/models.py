@@ -16,7 +16,8 @@ class UserProfile(TimestampMixin, models.Model):
                                 related_name='profile')
     bio = models.TextField(default="Update your profile")
     image = CloudinaryField(
-        "image", default="https://res.cloudinary.com/dy2faavdk/image/upload/v1548264034/qvxtpdmi03kksg9rxgfj.png")
+        "image",
+        default="https://res.cloudinary.com/dy2faavdk/image/upload/v1548264034/qvxtpdmi03kksg9rxgfj.png")
 
     @property
     def username(self):

@@ -1,8 +1,5 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
-import jwt
-from django.conf import settings
-import json
 
 
 class TestBase(APITestCase):

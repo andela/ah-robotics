@@ -10,7 +10,6 @@ class ProfilesTestCase(TestBase):
         # register user
         response = self.register_user(data=self.user)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        # access user profile
 
     def test_view_a_user_profile(self):
         """View one user's profile"""
@@ -37,11 +36,8 @@ class ProfilesTestCase(TestBase):
 
     def test_that_a_user_cannot_edit_another_users_profile(self):
         """Tests that a user can only edit their profile"""
-        # login  and authorize default user
         self.authorize_user(self.user_login_details)
-        # register a new user
         self.register_user(self.user2)
-        # edit user details
         url = self.profiles_url + \
             '{}'.format(self.user2['user']['username']) + "/"
         response = self.client.patch(url, data=self.user_bio)

@@ -30,7 +30,7 @@ class ProfileItemView(APIView):
     def get(self, request, username):
         try:
             user_profile = UserProfile.objects.get(user__username=username)
-        except:
+        except BaseException:
             response = {"error": "User profile does not exist."}
             return Response(response, status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(user_profile)
@@ -38,7 +38,7 @@ class ProfileItemView(APIView):
             'profile': serializer.data}, status=status.HTTP_200_OK)
 
     def patch(self, request, username):
-        """ 
+        """
         This method allows users to update their own profiles
         A user is forbidden from updating other user's profiles
         """
