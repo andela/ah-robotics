@@ -32,5 +32,7 @@ urlpatterns = [
     path('api/v1/docs/', schema_view),
     path('api/v1/', include(('authors.apps.profiles.urls',
                              'profile'), namespace='profiles')),
+    path('api/v1/', include(('authors.apps.articles.urls',
+                             'articles'), namespace='articles'))
 ]
 

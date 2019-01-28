@@ -1,9 +1,11 @@
 from django.db import models
-from authors.settings import AUTH_USER_MODEL
-from authors.apps.core.models import TimestampMixin
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+from authors.settings import AUTH_USER_MODEL
+from authors.apps.core.models import TimestampMixin
 from authors.apps.authentication.models import User
+
 from cloudinary.models import CloudinaryField
 
 

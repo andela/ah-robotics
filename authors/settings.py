@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'django_inlinecss',
     'cloudinary',
     'authors.apps.profiles',
+    'authors.apps.articles'
 ]
 
 MIDDLEWARE = [
