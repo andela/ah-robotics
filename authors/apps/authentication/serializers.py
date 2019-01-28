@@ -21,7 +21,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     # Ensure the password has alphanumeric and special characters
     def validate_password(self, data):
         if not re.match(
-            r'^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).*',
+                r'^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).*',
                 data):
             raise serializers.ValidationError(
                 "Password must have letters, numbers and special characters")
@@ -187,7 +187,7 @@ class ResetPasswordSerializer(serializers.Serializer):
     # Ensure the password has alphanumeric and special characters
     def validate_password(self, data):
         if not re.match(
-            r'^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).*',
+                r'^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).*',
                 data):
             raise serializers.ValidationError(
                 "Password must have letters, numbers and special characters")

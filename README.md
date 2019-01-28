@@ -88,6 +88,9 @@ by leveraging the modern web.
       export EMAIL_HOST_USER="testmail@mail.com"
       export EMAIL_HOST_PASSWORD="pass21234"
       export EMAIL_PORT=587
+      export CLOUDINARY_NAME="cloudinary_name"
+      export CLOUDINARY_KEY="cloudinary_key"
+      export CLOUDINARY_SECRET="cloudinary_secret"
       ```
 
   7. Source .env to set the configuration variables:
@@ -99,6 +102,9 @@ by leveraging the modern web.
       python manage.py makemigrations
       python manage.py migrate
       ```
+  9. Collect static files
+
+    python manage.py collectstatic
 
 ---
 
