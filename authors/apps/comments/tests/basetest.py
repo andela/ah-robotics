@@ -7,6 +7,7 @@ class BaseTest(APITestCase):
     """
     Write reusable tests code here
     """
+
     def setUp(self):
         """
         Setup code that runs avery time a test executes
@@ -54,6 +55,7 @@ class BaseTest(APITestCase):
                 "title": "My Article",
                 "description": "This is my article",
                 "body": "This article was creeated by me",
+                "tagList": ['test'],
                 "author": 1
             }
         }

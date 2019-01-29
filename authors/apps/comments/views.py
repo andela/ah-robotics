@@ -174,8 +174,14 @@ class OneCommentAPIView(generics.RetrieveUpdateDestroyAPIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        comment = request.data.get('comment', {})
-        serializer = self.serializer_class(data=comment, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(author=request.user, article=article)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        comment_data = request.data.get('comment', {})
+        comment.body = comment_data['body']
+        comment.save(update_fields=['body'])
+        return Response(
+            {
+                "comment": {
+                    "message": "Comment Updated successfully"
+                }
+            },
+            status=status.HTTP_200_OK
+        )

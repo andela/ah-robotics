@@ -11,6 +11,12 @@ class Commentserializer(serializers.ModelSerializer):
     """
     author = serializers.SerializerMethodField()
     article = serializers.SerializerMethodField()
+    body = serializers.CharField(
+        required=True,
+        error_messages={
+            'required': 'comment body cannot be empty',
+        }
+    )
 
     class Meta:
         model = Comment

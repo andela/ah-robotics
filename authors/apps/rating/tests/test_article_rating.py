@@ -84,7 +84,6 @@ class TestRatingArticle(RatingTestBase):
     def test_unsucessful_rating_with_rating_greater_than_five(self):
         """Test that user cannot submit a rating greater than five"""
         response = self.post_article_req(data=self.article)
-        print(response.data)
         self.slug = response.data['slug']
         self.rate_article_url = reverse(
             'rating:rating', kwargs={"slug": self.slug})

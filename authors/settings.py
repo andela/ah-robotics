@@ -195,11 +195,9 @@ AUTHENTICATION_BACKENDS = (
 SITE_ID = 1
 
 
-
 CLOUDINARY = {
-   'cloud_name': os.getenv('CLOUDINARY_NAME'),
-   'api_key': os.getenv('CLOUDINARY_KEY'),
-   'api_secret': os.getenv('CLOUDINARY_SECRET'),
-   'secure': True
+    'cloud_name': os.getenv('CLOUDINARY_NAME'),
+    'api_key': os.getenv('CLOUDINARY_KEY'),
+    'api_secret': os.getenv('CLOUDINARY_SECRET'),
+    'secure': True
 }
-

@@ -6,6 +6,7 @@ class TestComments(BaseTest):
     """
     Comments Testcase
     """
+
     def test_create_comment(self):
         """
         Test whether a user can create a comment
@@ -59,7 +60,7 @@ class TestComments(BaseTest):
         self.create_article(self.sample_article)
         res = self.create_comment(
             self.sample_comment, self.sample_article)
-        url = self.comment_url("my-article")+'3/'
+        url = self.comment_url("my-article")+'5/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -71,14 +72,17 @@ class TestComments(BaseTest):
         self.create_article(self.sample_article)
         res = self.create_comment(
             self.sample_comment, self.sample_article)
-
-        url = self.comment_url("my-article")+'5/'
+        url = self.comment_url("my-article")+'7/'
         response = self.client.put(
             url,
             self.sample_update_data,
             format='json'
         )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data['comment']['message'],
+            "Comment Updated successfully"
+        )
 
     def test_unauthorized_update_comment(self):
         """
@@ -86,15 +90,43 @@ class TestComments(BaseTest):
         """
         self.authenticate_user(self.sample_user)
         self.create_article(self.sample_article)
-        self.create_comment(
+        res = self.create_comment(
             self.sample_comment, self.sample_article)
         self.authenticate_user(self.sample_bad_user)
-        url = self.comment_url("my-article")+'5/'
+        url = self.comment_url("my-article")+'6/'
         response = self.client.put(
             url,
             self.sample_update_data,
             format='json'
         )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['comment']
+                         ['message'], "You are not authorized to comment")
+
+    def test_delete_comment(self):
+        """
+        Test delete comment
+        """
+        self.authenticate_user(self.sample_user)
+        self.create_article(self.sample_article)
+        res = self.create_comment(
+            self.sample_comment, self.sample_article)
+        url = self.comment_url("my-article")+'2/'
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['comment']
+                         ['message'], "Comment deleted successfully")
+
+    def test_get_inexistent_comment(self):
+        """
+        Test tries to get a comment not existing
+        """
+        self.authenticate_user(self.sample_user)
+        self.create_article(self.sample_article)
+        res = self.create_comment(
+            self.sample_comment, self.sample_article)
+        url = self.comment_url("my-article")+'3/'
+        response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.data['comment']
                          ['message'], "Comment not found")
