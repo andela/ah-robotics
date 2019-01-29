@@ -36,5 +36,6 @@ urlpatterns = [
                              'articles'), namespace='articles')),
     path('api/v1/', include(('authors.apps.rating.urls',
                              'rating'), namespace='rating'))
+    path('api/v1/', include(('authors.apps.comments.urls',
+                             'comments'), namespace='comments')),
 ]
-
