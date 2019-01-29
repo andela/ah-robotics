@@ -26,6 +26,7 @@ class ArticleTestBase(APITestCase):
                 "title": "The One",
                 "description": "This is an article about the one",
                 "body": "The one is the one",
+                "tagList": ["Obi", "Wan", "Kenobi"],
                 "author": 1}
         }
         self.article_empty_title = {
