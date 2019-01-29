@@ -7,7 +7,6 @@ class BaseTest(APITestCase):
     """
     Write reusable tests code here
     """
-
     def setUp(self):
         """
         Setup code that runs avery time a test executes
@@ -15,9 +14,6 @@ class BaseTest(APITestCase):
         self.client = APIClient()
         self.registration_url = reverse('authentication:register_url')
         self.login_url = reverse('authentication:login_url')
-        # self.all_comments_url = reverse('comments:all_comment_url')
-        # self.one_comment_url = reverse('comments:one_comment_url')
-        # self.comment_update_url = reverse('comments:update_comment_url')
         self.articles_url = reverse('articles:articles')
 
         self.sample_user = {

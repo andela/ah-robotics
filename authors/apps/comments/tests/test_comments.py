@@ -6,7 +6,6 @@ class TestComments(BaseTest):
     """
     Comments Testcase
     """
-
     def test_create_comment(self):
         """
         Test whether a user can create a comment
