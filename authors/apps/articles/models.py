@@ -7,7 +7,8 @@ from authors.apps.core.models import TimestampMixin
 
 from cloudinary.models import CloudinaryField
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.fields import (GenericForeignKey,
+                                                GenericRelation)
 from django.db.models import Sum
 
 
@@ -18,15 +19,15 @@ class ReactionManager(models.Manager):
     use_related_fields = True
 
     def likes(self):
-        "fetches reactions with a value greater than zero"
+        """fetches reactions with a value greater than zero"""
         return self.get_queryset().filter(reaction__gt=0)
 
     def dislikes(self):
-        "fetches reactions with a value less than zero"
+        """fetches reactions with a value less than zero"""
         return self.get_queryset().filter(reaction__lt=0)
 
     def sum_rating(self):
-        "returns the sum of reaction items"
+        """returns the sum of reaction items"""
         return self.get_queryset().aggregate(
             Sum('reaction')).get('reaction__sum') or 0
 
@@ -34,20 +35,20 @@ class ReactionManager(models.Manager):
 class Reaction(models.Model):
     LIKE = 1
     DISLIKE = -1
-    # reactions set contains either a like a dislike
+    """ reactions set contains either a like a dislike """
     REACTIONS = (
         (LIKE, 'like'),
         (DISLIKE, 'dislike')
     )
-    # reaction field can be set to a like or dislike
+    """ reaction field can be set to a like or dislike """
     reaction = models.SmallIntegerField(choices=REACTIONS)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    # defines the type of  related object
+    """ defines the type of  related object """
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    # defines the object id for the related object
+    """ defines the object id for the related object """
     object_id = models.PositiveSmallIntegerField()
-    # provides generic foreign key using content_type and object_id
+    """ provides generic foreign key using content_type and object_id """
     content_object = GenericForeignKey()
 
     objects = ReactionManager()

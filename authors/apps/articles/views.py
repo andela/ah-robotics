@@ -154,7 +154,8 @@ class ReactionView(CreateAPIView):
         return Response({
             "status": result,
             "likes": article.reaction.likes().count(),
-            "dislikes": article.reaction.dislikes().count()
+            "dislikes": article.reaction.dislikes().count(),
+            "total": article.reaction.sum_rating()
         },
             content_type="application/json",
             status=status.HTTP_201_CREATED
