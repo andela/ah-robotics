@@ -19,7 +19,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from authors.apps.authentication.views import FacebookLogin, TwitterLogin, GoogleLogin
+from authors.apps.authentication.views import (
+    FacebookLogin, TwitterLogin, GoogleLogin)
 from .swagger_docs import schema_view
 
 urlpatterns = [
@@ -38,4 +39,6 @@ urlpatterns = [
                              'rating'), namespace='rating')),
     path('api/v1/', include(('authors.apps.comments.urls',
                              'comments'), namespace='comments')),
+    path('api/v1/', include(('authors.apps.favorites.urls',
+                             'favorites'), namespace='favorites')),
 ]
