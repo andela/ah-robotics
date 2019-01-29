@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'taggit',
     'taggit_serializer',
     'authors.apps.rating',
+    'authors.apps.comments',
 ]
 
 MIDDLEWARE = [
