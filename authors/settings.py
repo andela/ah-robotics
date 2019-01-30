@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'authors.apps.comments',
     'authors.apps.bookmark',
     'authors.apps.followers',
+    'django_filters'
 ]
 
 MIDDLEWARE = [

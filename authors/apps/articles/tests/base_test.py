@@ -54,6 +54,7 @@ class ArticleTestBase(APITestCase):
         self.register_url = reverse('authentication:register_url')
         self.login_url = reverse('authentication:login_url')
         self.articles_url = reverse('articles:articles')
+        self.search_url = reverse('articles:article-search')
 
     def register_user(self, data):
         """register a user"""

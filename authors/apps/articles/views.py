@@ -1,11 +1,12 @@
 from django.contrib.contenttypes.models import ContentType
 
 from rest_framework.generics import (
-    ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView)
+    ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, ListAPIView)
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
+from django_filters import rest_framework as filters
 
 from authors.apps.core.permissions import IsOwnerOrReadonly
 from .models import Article, Reaction
@@ -164,3 +165,19 @@ class ReactionView(CreateAPIView):
             content_type="application/json",
             status=status.HTTP_201_CREATED
         )
+class ArticleFilter(filters.FilterSet):
+    author = filters.CharFilter(field_name="author__username", lookup_expr="exact")
+    title = filters.CharFilter(field_name="title", lookup_expr="contains")
+    tagList = filters.CharFilter(field_name='tag_list', method='get_tags')
+
+    def get_tags(self, queryset, name, value):
+        return queryset.filter(tagList__name__icontains=value)
+    class Meta:
+        model = Article
+        fields = ['author', 'title', 'tagList']
+
+class ArticleList(ListAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializers
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ArticleFilter
