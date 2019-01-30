@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from .models import UserProfile
 from .renderers import ProfilesJSONRenderer
-from .serializers import ProfileSerializer
+from .serializers import ProfileSerializer, FollowSerializer
 
 
 class ProfileListView(ListAPIView):
@@ -17,7 +17,7 @@ class ProfileListView(ListAPIView):
     def get(self, request, *args, **kwargs):
         # fetches all profiles except the requester
         queryset = UserProfile.objects.all().exclude(user=self.request.user)
-        serializer = self.serializer_class(queryset, many=True)
+        serializer = FollowSerializer(queryset, many=True,context={'request':request})
         return Response({
             'profiles': serializer.data}, status=status.HTTP_200_OK)
 
@@ -33,7 +33,7 @@ class ProfileItemView(APIView):
         except BaseException:
             response = {"error": "User profile does not exist."}
             return Response(response, status=status.HTTP_404_NOT_FOUND)
-        serializer = self.serializer_class(user_profile)
+        serializer = FollowSerializer(user_profile,context={'request':request})
         return Response({
             'profile': serializer.data}, status=status.HTTP_200_OK)
 

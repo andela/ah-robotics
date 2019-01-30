@@ -7,6 +7,7 @@ from cloudinary.models import CloudinaryField
 from authors.settings import AUTH_USER_MODEL
 from authors.apps.core.models import TimestampMixin
 from authors.apps.authentication.models import User
+from authors.apps.followers.models import Follower
 
 
 class UserProfile(TimestampMixin, models.Model):

@@ -8,7 +8,7 @@ class FollowerSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Follower
-        fields = ['user', 'user_to_follow']
+        fields = ['user', 'followed_user']
 
     
 
@@ -18,5 +18,5 @@ class FollowerInfoSerializer(serializers.BaseSerializer):
     """
     def to_representation(self, obj):
         return {
-            'username': obj.user_to_follow.username,
+            'username': obj.followed_user.username,
         }

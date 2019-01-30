@@ -1,10 +1,16 @@
 from django.urls import path
 
-from .views import ListCreateFollow, DeleteFavorite
+from .views import ListCreateFollow, DeleteFollower
 
 app_name = 'followers'
 
 urlpatterns = [
-    path('follow/', ListCreateFollow.as_view(), name='follow'),
-    path('follow/<username>/', DeleteFavorite.as_view())
+    path('followers/<username>/',
+     DeleteFollower.as_view()
+     ),
+    path('profiles/<username>/follow',
+     ListCreateFollow.as_view(),
+      name='followers'
+      ),
+    path('followers/', ListCreateFollow.as_view(), name='followers')
 ]
