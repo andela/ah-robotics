@@ -32,8 +32,11 @@ class FavoriteTestBase(APITestCase):
         self.article_slug = {
             "article_slug": "the-one"
         }
-
-        self.non_existent_article_slug = "article-is-absent/"
+        self.absent_article_slug = {
+            "article_slug": "article-absent"
+        }
+        self.existing_article_slug = "the-one"
+        self.non_existent_article_slug = "article-absent"
         self.client = APIClient()
         self.register_url = reverse('authentication:register_url')
         self.login_url = reverse('authentication:login_url')
@@ -56,7 +59,7 @@ class FavoriteTestBase(APITestCase):
 
     def authorize_user(self, user_login_details):
         """
-
+        Obtain token for access to protected endpoints
         """
         self.register_user(data=self.user)
         payload = self.login_a_user(data=user_login_details)
