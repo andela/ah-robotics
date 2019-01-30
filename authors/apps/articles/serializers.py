@@ -2,11 +2,13 @@ from rest_framework import serializers
 
 from authors.apps.profiles.serializers import AuthorSerializer
 from authors.apps.profiles.models import UserProfile
+from taggit_serializer.serializers import (
+    TagListSerializerField, TaggitSerializer)
 
 from .models import Article
 
 
-class ArticleSerializers(serializers.ModelSerializer):
+class ArticleSerializers(TaggitSerializer, serializers.ModelSerializer):
     slug = serializers.CharField(read_only=True)
     title = serializers.CharField(
         required=True,
@@ -31,6 +33,7 @@ class ArticleSerializers(serializers.ModelSerializer):
     )
     image = serializers.ImageField(default=None)
     author = serializers.SerializerMethodField(read_only=True)
+    tagList = TagListSerializerField()
 
     def get_author(self, obj):
         """Get the profile of the author of the article"""
@@ -42,4 +45,4 @@ class ArticleSerializers(serializers.ModelSerializer):
         model = Article
         fields = ('slug', 'title', 'description',
                   'body', 'image', 'created_at', 'updated_at',
-                  'author')
+                  'author', 'tagList')

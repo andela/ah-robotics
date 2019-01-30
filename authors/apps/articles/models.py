@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from taggit.managers import TaggableManager
 
 from authors.apps.authentication.models import User
 from authors.apps.core.models import TimestampMixin
@@ -17,6 +18,7 @@ class Article(TimestampMixin, models.Model):
     description = models.CharField(max_length=1000, blank=False)
     body = models.TextField(blank=False)
     image = CloudinaryField(blank=True, null=True)
+    tagList = TaggableManager()
     author = models.ForeignKey(User,
                                related_name='article',
                                on_delete=models.CASCADE)

@@ -183,3 +183,15 @@ class TestArticle(ArticleTestBase):
         response_message = response2.data["detail"]
         self.assertEqual(response_message,
                          "Authentication credentials were not provided.")
+
+    def test_add_tag_article(self):
+        """
+        User should be able to add tags to an article
+        """
+        self.authorize_user(self.user)
+        response = self.client.post(self.articles_url,
+                                    self.article, format='json')
+        created_slug = response.data['slug']
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(created_slug, "the-one")
+        self.assertEqual(len(response.data["tagList"]), 3)
