@@ -43,4 +43,6 @@ urlpatterns = [
                              'favorites'), namespace='favorites')),
     path('api/v1/', include(('authors.apps.bookmark.urls',
                              'bookmark'), namespace='bookmark')),
+    path('api/v1/', include(('authors.apps.followers.urls', 
+                            'followers'), namespace='followers'))
 ]
