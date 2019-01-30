@@ -1,9 +1,9 @@
-from .base_test import FavoriteTestBase
-
 from rest_framework import status
 
+from .base_test import FavoriteTestBase, generate_slug_url
 
-class FavoriteTestCase(FavoriteTestBase):
+
+class FavoritesTestCase(FavoriteTestBase):
     """
     Test Class containing tests for Favorite Module
     """
@@ -17,8 +17,8 @@ class FavoriteTestCase(FavoriteTestBase):
         self.client.post(self.articles_url,
                          self.article, format='json')
 
-        response = self.client.post(self.favorites_url,
-                                    self.article_slug, format='json')
+        response = self.client.put(
+            generate_slug_url(self.article_slug))
         message = response.data['message']
 
         self.assertEqual(expected_message, message)
@@ -35,8 +35,8 @@ class FavoriteTestCase(FavoriteTestBase):
 
         self.client.credentials()
         self.authorize_user(self.second_user)
-        response = self.client.post(self.favorites_url,
-                                    self.article_slug, format='json')
+        response = self.client.put(
+            generate_slug_url(self.article_slug))
         message = response.data['message']
 
         self.assertEqual(expected_message, message)
@@ -51,14 +51,12 @@ class FavoriteTestCase(FavoriteTestBase):
         self.client.post(self.articles_url,
                          self.article, format='json')
 
-        self.client.post(self.favorites_url,
-                         self.article_slug, format='json')
+        self.client.put(generate_slug_url(self.article_slug))
 
-        response2 = self.client.post(self.favorites_url,
-                                     self.article_slug, format='json')
-        message = response2.data['error']
+        response = self.client.put(generate_slug_url(self.article_slug))
+        message = response.data['error']
         self.assertEqual(expected_message, message)
-        self.assertEqual(response2.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_favorite_non_existent_article(self):
         """
@@ -70,8 +68,8 @@ class FavoriteTestCase(FavoriteTestBase):
         self.client.post(self.articles_url,
                          self.article, format='json')
 
-        response = self.client.post(self.favorites_url,
-                                    self.absent_article_slug, format='json')
+        response = self.client.put(
+            generate_slug_url(self.non_existent_article_slug))
         message = response.data['error']
 
         self.assertEqual(expected_message, message)
@@ -85,12 +83,11 @@ class FavoriteTestCase(FavoriteTestBase):
         self.authorize_user(self.user)
         self.client.post(self.articles_url,
                          self.article, format='json')
-        self.client.post(self.favorites_url,
-                         self.article_slug, format='json')
+        self.client.put(
+            generate_slug_url(self.article_slug))
 
-        response = self.client.delete(self.favorites_url
-                                      + self.existing_article_slug
-                                      + '/')
+        response = self.client.delete(
+            generate_slug_url(self.article_slug))
         message = response.data['message']
         self.assertEqual(expected_message, message)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -104,15 +101,13 @@ class FavoriteTestCase(FavoriteTestBase):
         self.authorize_user(self.user)
         self.client.post(self.articles_url,
                          self.article, format='json')
-        self.client.post(self.favorites_url,
-                         self.article_slug, format='json')
-        self.client.delete(self.favorites_url
-                           + self.existing_article_slug
-                           + '/')
+        self.client.put(
+            generate_slug_url(self.article_slug))
+        self.client.delete(
+            generate_slug_url(self.article_slug))
 
-        response = self.client.delete(self.favorites_url
-                                      + self.existing_article_slug
-                                      + '/')
+        response = self.client.delete(
+            generate_slug_url(self.article_slug))
         message = response.data['message']
         self.assertEqual(expected_message, message)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -127,9 +122,8 @@ class FavoriteTestCase(FavoriteTestBase):
         self.client.post(self.articles_url,
                          self.article, format='json')
 
-        response = self.client.delete(self.favorites_url
-                                      + self.non_existent_article_slug
-                                      + '/')
+        response = self.client.delete(
+            generate_slug_url(self.non_existent_article_slug))
         message = response.data['error']
 
         self.assertEqual(expected_message, message)

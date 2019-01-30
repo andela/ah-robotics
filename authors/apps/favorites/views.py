@@ -1,31 +1,27 @@
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, DestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from authors.apps.articles.models import Article
-from authors.apps.core.permissions import IsOwnerOrReadonly
-
 from .models import Favorite
-from .serializers import FavoriteInputSerializer, FavoriteInfoSerializer
 from .renderers import FavoriteJsonRenderer
+from .serializers import FavoriteInputSerializer, FavoriteInfoSerializer
 
 
-class ListCreateFavorite(ListCreateAPIView):
+class FavouritesView(RetrieveUpdateDestroyAPIView):
     """
-    Provide view for adding an article to favorites
-    and a view for displaying a list of favorites articles
+    Provide views that allows addition and removal of favorite articles
     """
     queryset = Favorite.objects.all()
     serializer_class = FavoriteInfoSerializer
     renderer_classes = (FavoriteJsonRenderer,)
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-    def post(self, request):
+    def put(self, request, slug):
         """
-        Add an article to the user's favorites
+        Add an article to user favorites
         """
-        slug = request.data.get('article_slug')
         article_exists = Article.objects.filter(slug=slug).exists()
         if not article_exists:
             return Response({'error': 'article with given slug not found'},
@@ -46,23 +42,9 @@ class ListCreateFavorite(ListCreateAPIView):
         return Response({'message': 'article added to favorites'},
                         status.HTTP_201_CREATED)
 
-    def get(self, request):
-        queryset = Favorite.objects.filter(user=self.request.user)
-        serializer = self.serializer_class(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class DeleteFavorite(DestroyAPIView):
-    """
-    Delete view to allow user to remove article from favorites
-    """
-    queryset = Favorite.objects.all()
-    serializer_class = FavoriteInfoSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadonly)
-
     def delete(self, request, slug):
         """
-        Delete article from user favorites
+        Remove an article from user favorites
         """
         article_exists = Article.objects.filter(slug=slug).exists()
         if not article_exists:
@@ -82,3 +64,21 @@ class DeleteFavorite(DestroyAPIView):
                             status.HTTP_200_OK)
         return Response({'message': 'article not in favorites'},
                         status.HTTP_404_NOT_FOUND)
+
+
+class ListAllFavorites(ListCreateAPIView):
+    """
+    Provide a view for displaying a list of favorites articles
+    """
+    queryset = Favorite.objects.all()
+    serializer_class = FavoriteInfoSerializer
+    renderer_classes = (FavoriteJsonRenderer,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def get(self, request):
+        """
+        Get a list of all the articles in user favorites
+        """
+        queryset = Favorite.objects.filter(user=self.request.user)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
