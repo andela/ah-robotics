@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.models import ContentType
+
 from rest_framework.generics import (
     ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView)
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -10,7 +12,6 @@ from authors.apps.core.permissions import IsOwnerOrReadonly
 from .models import Article, Reaction
 from .serializers import ArticleSerializers, ReactionSerializer
 from .renderers import ArticleJsonRenderer
-from django.contrib.contenttypes.models import ContentType
 
 
 def article_not_found():
@@ -49,6 +50,11 @@ class ListCreateArticle(ListCreateAPIView):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    def get(self, request):
+        queryset = Article.objects.all()
+        serializer = self.serializer_class(queryset, many=True, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class RetrieveUpdateDeleteArticle(RetrieveUpdateDestroyAPIView):
     """
@@ -78,7 +84,7 @@ class RetrieveUpdateDeleteArticle(RetrieveUpdateDestroyAPIView):
 
         article_data = request.data.get('article', {})
         serializer = self.serializer_class(
-            article, data=article_data, partial=True)
+            article, data=article_data, partial=True, context={'request': request})
 
         if serializer.is_valid():
             self.check_object_permissions(request, article)

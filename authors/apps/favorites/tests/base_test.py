@@ -27,6 +27,7 @@ class FavoriteTestBase(APITestCase):
                 "title": "The One",
                 "description": "This is an article about the one",
                 "body": "The one is the one",
+                "tagList": ["sample", "article"],
                 "author": 1}
         }
         self.article_slug = {

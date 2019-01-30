@@ -17,6 +17,7 @@ class FavoriteInfoSerializer(serializers.BaseSerializer):
     """
     Article Serializer to display the article slug
     """
+
     def to_representation(self, obj):
         return {
             'article': obj.article.slug,
