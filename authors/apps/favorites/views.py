@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 
 from authors.apps.articles.models import Article
@@ -73,7 +73,7 @@ class ListAllFavorites(ListCreateAPIView):
     queryset = Favorite.objects.all()
     serializer_class = FavoriteInfoSerializer
     renderer_classes = (FavoriteJsonRenderer,)
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         """

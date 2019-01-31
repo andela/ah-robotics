@@ -8,7 +8,6 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 
 from authors.apps.core.permissions import IsOwnerOrReadonly
-
 from .models import Article, Reaction
 from .serializers import ArticleSerializers, ReactionSerializer
 from .renderers import ArticleJsonRenderer

@@ -5,7 +5,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Comment
-from .serializers import Commentserializer
+from .serializers import CommentSerializer
 from authors.apps.articles.models import Article
 
 
@@ -14,7 +14,7 @@ class CommentsAPIView(APIView):
     Create a view to post, update, delete and get all comments
     """
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    serializer_class = Commentserializer
+    serializer_class = CommentSerializer
 
     def get(self, request, **kwargs):
         slug = self.kwargs['slug']
@@ -66,7 +66,7 @@ class OneCommentAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
 
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    serializer_class = Commentserializer
+    serializer_class = CommentSerializer
 
     def get(self, request, id, *args, **kwargs):
         """

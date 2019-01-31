@@ -7,7 +7,6 @@ from taggit_serializer.serializers import (
 from authors.apps.profiles.models import UserProfile
 from authors.apps.profiles.serializers import AuthorSerializer
 from authors.apps.favorites.models import Favorite
-
 from .models import Article, Reaction
 from ..rating.models import Rating
 
