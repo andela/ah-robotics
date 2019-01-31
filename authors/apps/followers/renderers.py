@@ -17,9 +17,6 @@ class FollowerJsonRenderer(renderers.BaseRenderer):
         Render a list of followers
         """
         if isinstance(data, list):
-            if not data:
-                return json.dumps(
-                    {'message': "Not following anyone at the moment"})
             return json.dumps(
                 {'following': data})
         else:
