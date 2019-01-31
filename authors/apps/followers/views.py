@@ -1,7 +1,7 @@
 from rest_framework.generics import (
     ListCreateAPIView, DestroyAPIView)
 from authors.apps.authentication.models import User
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from authors.apps.core.permissions import IsOwnerOrReadonly
@@ -14,7 +14,7 @@ from .renderers import FollowerJsonRenderer
 class ListCreateFollow(ListCreateAPIView):
     queryset = Follower.objects.all()
     serializer_class = FollowerInfoSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     renderer_classes = (FollowerJsonRenderer,)
 
     def post(self, request, username):
