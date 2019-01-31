@@ -1,14 +1,16 @@
-from rest_framework.generics import (
-    ListCreateAPIView, DestroyAPIView)
-from authors.apps.authentication.models import User
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.generics import (ListCreateAPIView,
+                                     DestroyAPIView)
+from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
+                                        IsAuthenticated)
 from rest_framework.response import Response
 from rest_framework import status
-from authors.apps.core.permissions import IsOwnerOrReadonly
 
-from .models import Follower
 from .serializers import FollowerSerializer, FollowerInfoSerializer
 from .renderers import FollowerJsonRenderer
+
+from .models import Follower
+from authors.apps.core.permissions import IsOwnerOrReadonly
+from authors.apps.authentication.models import User
 
 
 class ListCreateFollow(ListCreateAPIView):
@@ -25,7 +27,7 @@ class ListCreateFollow(ListCreateAPIView):
         if not user_exists:
             return Response(
                 {'error': 'user with that name was not found'},
-                            status.HTTP_404_NOT_FOUND)
+                status.HTTP_404_NOT_FOUND)
         followed_user = User.objects.get(username=username)
         already_followed = Follower.is_user_already_followed(
             followed_user_id=followed_user.id,
@@ -39,7 +41,7 @@ class ListCreateFollow(ListCreateAPIView):
                             status.HTTP_400_BAD_REQUEST)
         data = {
             "followed_user": followed_user.id,
-             "user": self.request.user.id}
+            "user": self.request.user.id}
         serializer = FollowerSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()

@@ -17,6 +17,7 @@ class FollowerBaseTest(APITestCase):
                 "password": "tester232#$$"
             }
         }
+
         self.user2 = {
             "user": {
                 "username": "paulotieno",
@@ -24,8 +25,7 @@ class FollowerBaseTest(APITestCase):
                 "password": "tester232#$$"
             }
         }
-        
-    
+
         self.followed_user = {
             "username": "paulotieno"
         }
@@ -37,7 +37,7 @@ class FollowerBaseTest(APITestCase):
         self.follow_self = {
             "username": "tester"
         }
-        
+
         self.client = APIClient()
         self.register_url = reverse('authentication:register_url')
         self.login_url = reverse('authentication:login_url')

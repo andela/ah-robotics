@@ -5,12 +5,11 @@ from .models import Follower
 
 class FollowerSerializer(serializers.ModelSerializer):
     """Serializer to follow another user"""
-    
+
     class Meta:
         model = Follower
         fields = ['user', 'followed_user']
 
-    
 
 class FollowerInfoSerializer(serializers.BaseSerializer):
     """
