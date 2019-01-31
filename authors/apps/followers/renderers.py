@@ -18,7 +18,7 @@ class FollowerJsonRenderer(renderers.BaseRenderer):
         """
         if isinstance(data, list):
             return json.dumps(
-                {'followers': data})
+                {'following': data})
         else:
             """
             Render a single follower or an error message
@@ -27,4 +27,4 @@ class FollowerJsonRenderer(renderers.BaseRenderer):
             if error:
                 return json.dumps({'message': data})
 
-            return json.dumps({'Details': data})
+            return json.dumps({'detail': data})

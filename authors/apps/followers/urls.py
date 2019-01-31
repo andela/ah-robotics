@@ -5,12 +5,13 @@ from .views import ListCreateFollow, DeleteFollower
 app_name = 'followers'
 
 urlpatterns = [
-    path('followers/<username>/',
-     DeleteFollower.as_view()
+    path('follow/<username>/',
+     DeleteFollower.as_view(),
+     name='delete_url'
      ),
     path('profiles/<username>/follow',
      ListCreateFollow.as_view(),
-      name='followers'
+      name='follow_url'
       ),
-    path('followers/', ListCreateFollow.as_view(), name='followers')
+    path('following/', ListCreateFollow.as_view(), name='following_url')
 ]
