@@ -65,6 +65,63 @@ class ArticleTestBase(APITestCase):
 
     def authorize_user(self, user_details):
         """Register and login user to obtain token"""
+        token = ""
         self.register_user(data=self.user)
         payload = self.login_a_user(data=user_details)
         self.client.credentials(HTTP_AUTHORIZATION='token ' + payload['token'])
+
+
+class BaseReactionTestCase(ArticleTestBase):
+
+    def setUp(self):
+        super().setUp()
+        self.base_article = article = self.create_article()
+        self.slug = self.get_slug(self.base_article.data)
+
+        self.like_url = reverse('articles:like-article',
+                                kwargs={'slug': self.slug})
+        self.dislike_url = reverse(
+            'articles:dislike-article', kwargs={'slug': self.slug})
+
+        self.non_existing_user = {
+            "email": "stranger@gmail.com",
+            "password": "stranger@12"
+        }
+
+        """
+        create second user
+        """
+        self.create_user()
+        self.user1 = {"user": {
+            "email": "johns@gmail.com",
+            "password": "wekeep@3232"
+        }}
+
+    def create_article(self):
+        """
+        create base test article
+        """
+        base_article = {
+            "article": {
+                "title": "This is andela",
+                "description": "This is andela 2019",
+                "body": "The Dojo here we come",
+                "tagList": ["Obi", "Wan", "Kenobi"],
+                "author": 1}
+        }
+        self.authorize_user(self.user)
+        return self.client.post(self.articles_url, base_article, format='json')
+
+    def get_slug(self, article):
+        """
+        get article slug
+        """
+        return article['slug']
+
+    def create_user(self):
+        user1 = {"user": {
+            "username": "johns",
+            "email": "johns@gmail.com",
+            "password": "wekeep@3232"
+        }}
+        return self.client.post(self.register_url, data=user1, format='json')

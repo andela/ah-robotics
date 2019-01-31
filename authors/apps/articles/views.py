@@ -1,5 +1,5 @@
 from rest_framework.generics import (
-    ListCreateAPIView, RetrieveUpdateDestroyAPIView)
+    ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView)
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,9 +7,10 @@ from rest_framework.exceptions import ValidationError
 
 from authors.apps.core.permissions import IsOwnerOrReadonly
 
-from .models import Article
-from .serializers import ArticleSerializers
+from .models import Article, Reaction
+from .serializers import ArticleSerializers, ReactionSerializer
 from .renderers import ArticleJsonRenderer
+from django.contrib.contenttypes.models import ContentType
 
 
 def article_not_found():
@@ -112,3 +113,50 @@ class RetrieveUpdateDeleteArticle(RetrieveUpdateDestroyAPIView):
 
         super().delete(self, request, slug)
         return Response({"message": "article deleted successfully"})
+
+
+class ReactionView(CreateAPIView):
+    """
+    This class returns reaction objects
+    The reaction object contains article likes and dislikes
+    """
+    model = None
+    reaction_type = None
+    serializer_class = ReactionSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def post(self, request, slug):
+        article = get_article(slug)
+        try:
+            """
+            fetch existing user likes and dislikes on an article
+            """
+            likedislike = Reaction.objects.get(
+                content_type=ContentType.objects.get_for_model(article),
+                object_id=article.id,
+                user=request.user
+            )
+            """
+            toggle the article reaction
+            """
+            if likedislike.reaction is not self.reaction_type:
+                likedislike.reaction = self.reaction_type
+                likedislike.save(update_fields=['reaction'])
+                result = True
+            else:
+                likedislike.delete()
+                result = False
+        except Reaction.DoesNotExist:
+            # create new reaction
+            article.reaction.create(user=request.user,
+                                    reaction=self.reaction_type)
+            result = True
+        return Response({
+            "status": result,
+            "likes": article.reaction.likes().count(),
+            "dislikes": article.reaction.dislikes().count(),
+            "total": article.reaction.sum_rating()
+        },
+            content_type="application/json",
+            status=status.HTTP_201_CREATED
+        )

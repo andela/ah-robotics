@@ -5,7 +5,7 @@ from authors.apps.profiles.models import UserProfile
 from taggit_serializer.serializers import (
     TagListSerializerField, TaggitSerializer)
 
-from .models import Article
+from .models import Article, Reaction
 
 
 class ArticleSerializers(TaggitSerializer, serializers.ModelSerializer):
@@ -46,3 +46,9 @@ class ArticleSerializers(TaggitSerializer, serializers.ModelSerializer):
         fields = ('slug', 'title', 'description',
                   'body', 'image', 'created_at', 'updated_at',
                   'author', 'tagList')
+
+
+class ReactionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Reaction
