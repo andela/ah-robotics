@@ -1,4 +1,5 @@
 import json
+
 from rest_framework import renderers
 
 
@@ -15,10 +16,8 @@ class ArticleJsonRenderer(renderers.BaseRenderer):
         """
         Render a list of articles
         """
-        # display a list of articles
-        if isinstance(data, list):
-            return json.dumps(
-                {'articles': data})
+        if 'count' in data.keys():
+            return json.dumps(data)
         else:
             """
             Render a single article or an error message

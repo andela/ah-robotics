@@ -1,20 +1,20 @@
+import datetime
 import math
 import re
-import datetime
-from rest_framework import serializers
+
 from django.db.models import Avg
+from rest_framework import serializers
 from taggit_serializer.serializers import (
     TagListSerializerField, TaggitSerializer)
-from .models import Article
-from .models import Article, Reaction
+
+from authors.apps.favorites.models import Favorite
 from authors.apps.profiles.models import UserProfile
 from authors.apps.profiles.serializers import AuthorSerializer
-from authors.apps.favorites.models import Favorite
 from .models import Article, Reaction
 from ..rating.models import Rating
 
 
-class ArticleSerializers(TaggitSerializer, serializers.ModelSerializer):
+class ArticleSerializer(TaggitSerializer, serializers.ModelSerializer):
     slug = serializers.CharField(read_only=True)
     title = serializers.CharField(
         required=True,
@@ -90,7 +90,7 @@ class ArticleSerializers(TaggitSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ('id', 'slug', 'title', 'description',
+        fields = ('slug', 'title', 'description',
                   'body', 'image', 'created_at', 'updated_at',
                   'favorited', 'favorite_count', 'author', 'tagList',
                   'rating', 'read_time')

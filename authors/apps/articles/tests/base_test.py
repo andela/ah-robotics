@@ -74,6 +74,11 @@ class ArticleTestBase(APITestCase):
         """Create an article"""
         return self.client.post(self.articles_url, data=data, format="json")
 
+    def post_several_articles(self, repeat):
+        """Post an article repeatedly using the value of repeat"""
+        for n in range(repeat):
+            self.client.post(self.articles_url, self.article, format='json')
+
 
 class BaseReactionTestCase(ArticleTestBase):
 

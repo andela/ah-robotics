@@ -1,17 +1,19 @@
 from django.contrib.contenttypes.models import ContentType
-
-from rest_framework.generics import (
-    ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, ListAPIView)
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
+from django_filters import rest_framework as filters
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
-from django_filters import rest_framework as filters
+from rest_framework.generics import (
+    ListCreateAPIView, RetrieveUpdateDestroyAPIView,
+    CreateAPIView, ListAPIView)
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 
+from authors.apps.core.pagination import ArticlesListPagination
 from authors.apps.core.permissions import IsOwnerOrReadonly
+
 from .models import Article, Reaction
-from .serializers import ArticleSerializers, ReactionSerializer
 from .renderers import ArticleJsonRenderer
+from .serializers import ArticleSerializer, ReactionSerializer
 
 
 def article_not_found():
@@ -35,7 +37,7 @@ def get_article(slug):
 class ListCreateArticle(ListCreateAPIView):
     queryset = Article.objects.all()
     renderer_classes = (ArticleJsonRenderer,)
-    serializer_class = ArticleSerializers
+    serializer_class = ArticleSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def post(self, request):
@@ -52,8 +54,11 @@ class ListCreateArticle(ListCreateAPIView):
 
     def get(self, request):
         queryset = Article.objects.all()
-        serializer = self.serializer_class(queryset, many=True, context={'request': request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        paginator = ArticlesListPagination()
+        all_articles_page = paginator.paginate_queryset(queryset, request)
+        serializer = self.serializer_class(
+            all_articles_page, many=True, context={'request': request})
+        return paginator.get_paginated_response(serializer.data)
 
 
 class RetrieveUpdateDeleteArticle(RetrieveUpdateDestroyAPIView):
@@ -62,7 +67,7 @@ class RetrieveUpdateDeleteArticle(RetrieveUpdateDestroyAPIView):
     """
     lookup_field = 'slug'
     queryset = Article.objects.all()
-    serializer_class = ArticleSerializers
+    serializer_class = ArticleSerializer
     renderer_classes = (ArticleJsonRenderer,)
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadonly)
 
@@ -165,6 +170,8 @@ class ReactionView(CreateAPIView):
             content_type="application/json",
             status=status.HTTP_201_CREATED
         )
+
+
 class ArticleFilter(filters.FilterSet):
     author = filters.CharFilter(field_name="author__username", lookup_expr="exact")
     title = filters.CharFilter(field_name="title", lookup_expr="contains")
@@ -172,12 +179,14 @@ class ArticleFilter(filters.FilterSet):
 
     def get_tags(self, queryset, name, value):
         return queryset.filter(tagList__name__icontains=value)
+
     class Meta:
         model = Article
         fields = ['author', 'title', 'tagList']
 
+
 class ArticleList(ListAPIView):
     queryset = Article.objects.all()
-    serializer_class = ArticleSerializers
+    serializer_class = ArticleSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ArticleFilter
