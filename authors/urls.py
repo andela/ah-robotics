@@ -41,4 +41,6 @@ urlpatterns = [
                              'comments'), namespace='comments')),
     path('api/v1/', include(('authors.apps.favorites.urls',
                              'favorites'), namespace='favorites')),
+    path('api/v1/', include(('authors.apps.bookmark.urls',
+                             'bookmark'), namespace='bookmark')),
 ]
