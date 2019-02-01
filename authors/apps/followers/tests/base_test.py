@@ -50,6 +50,7 @@ class FollowerBaseTest(APITestCase):
         self.unfollow_url = reverse('followers:delete_url', kwargs={
             "username": self.followed_user['username']
         })
+        self.following_list_url = reverse('followers:following_url')
 
     def register_user(self, data):
         return self.client.post(
