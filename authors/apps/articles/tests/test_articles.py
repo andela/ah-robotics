@@ -10,8 +10,7 @@ class TestArticle(ArticleTestBase):
         User should be able to add an article
         """
         self.authorize_user(self.user)
-        response = self.client.post(self.articles_url,
-                                    self.article, format='json')
+        response = self.post_article_req(self.article)
         created_slug = response.data['slug']
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(created_slug, "the-one")
@@ -22,8 +21,7 @@ class TestArticle(ArticleTestBase):
         """
         self.article['article'].pop('title')
         self.authorize_user(self.user)
-        response = self.client.post(self.articles_url,
-                                    self.article, format='json')
+        response = self.post_article_req(self.article)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         response_message = response.data["errors"]["title"][0]
         self.assertEqual(response_message, "article title cannot be empty")
@@ -34,8 +32,7 @@ class TestArticle(ArticleTestBase):
         """
         self.article['article'].pop('body')
         self.authorize_user(self.user)
-        response = self.client.post(self.articles_url,
-                                    self.article, format='json')
+        response = self.post_article_req(self.article)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         response_message = response.data["errors"]["body"][0]
         self.assertEqual(response_message, "article body cannot be empty")
@@ -45,9 +42,7 @@ class TestArticle(ArticleTestBase):
         User should not be able to add an article with blank title field
         """
         self.authorize_user(self.user)
-        response = self.client.post(self.articles_url,
-                                    self.article_empty_title,
-                                    format='json')
+        response = self.post_article_req(self.article_empty_title)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         response_message = response.data["errors"]["title"][0]
         self.assertEqual(response_message, "This field may not be blank.")
@@ -57,9 +52,7 @@ class TestArticle(ArticleTestBase):
         User should not be able to add an article with blank body field
         """
         self.authorize_user(self.user)
-        response = self.client.post(self.articles_url,
-                                    self.article_empty_body,
-                                    format='json')
+        response = self.post_article_req(self.article_empty_body)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         response_message = response.data["errors"]["body"][0]
         self.assertEqual(response_message, "This field may not be blank.")
@@ -68,8 +61,7 @@ class TestArticle(ArticleTestBase):
         """
         Unauthorized user should not be able to create an article
         """
-        response = self.client.post(self.articles_url,
-                                    self.article, format='json')
+        response = self.post_article_req(self.article)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         response_message = response.data["detail"]
         self.assertEqual(response_message,
@@ -80,8 +72,7 @@ class TestArticle(ArticleTestBase):
         User should be able to view a single article
         """
         self.authorize_user(self.user)
-        response = self.client.post(self.articles_url,
-                                    self.article, format='json')
+        response = self.post_article_req(self.article)
         article_slug = response.data['slug']
         response2 = self.client.get(self.articles_url + article_slug + '/')
         self.assertEqual(response2.status_code, status.HTTP_200_OK)
@@ -91,8 +82,7 @@ class TestArticle(ArticleTestBase):
         Unauthorized user should be able to view a single article
         """
         self.authorize_user(self.user)
-        response = self.client.post(self.articles_url,
-                                    self.article, format='json')
+        response = self.post_article_req(self.article)
         article_slug = response.data['slug']
         self.client.credentials()
         response2 = self.client.get(self.articles_url + article_slug + '/')
@@ -130,8 +120,7 @@ class TestArticle(ArticleTestBase):
         User should be able to update an existing article
         """
         self.authorize_user(self.user)
-        response = self.client.post(self.articles_url,
-                                    self.article, format='json')
+        response = self.post_article_req(self.article)
         article_slug = response.data['slug']
         response2 = self.client.put(self.articles_url + article_slug + '/',
                                     self.article_update_details, format='json')
@@ -144,8 +133,7 @@ class TestArticle(ArticleTestBase):
         Unauthorized user should not be able to update existing article
         """
         self.authorize_user(self.user)
-        response = self.client.post(self.articles_url,
-                                    self.article, format='json')
+        response = self.post_article_req(self.article)
         article_slug = response.data['slug']
         self.client.credentials()
         response2 = self.client.put(self.articles_url + article_slug + '/',
@@ -160,8 +148,7 @@ class TestArticle(ArticleTestBase):
         User should be able to delete articles
         """
         self.authorize_user(self.user)
-        response = self.client.post(self.articles_url,
-                                    self.article, format='json')
+        response = self.post_article_req(self.article)
         article_slug = response.data['slug']
         response2 = self.client.delete(self.articles_url + article_slug + '/')
         self.assertEqual(response2.status_code, status.HTTP_200_OK)
@@ -174,8 +161,7 @@ class TestArticle(ArticleTestBase):
         This method tests if a non owner can delete an article
         """
         self.authorize_user(self.user)
-        response = self.client.post(self.articles_url,
-                                    self.article, format='json')
+        response = self.post_article_req(self.article)
         article_slug = response.data['slug']
         self.client.credentials()
         response2 = self.client.delete(self.articles_url + article_slug + '/')

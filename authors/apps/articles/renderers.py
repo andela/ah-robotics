@@ -15,6 +15,7 @@ class ArticleJsonRenderer(renderers.BaseRenderer):
         """
         Render a list of articles
         """
+        # display a list of articles
         if isinstance(data, list):
             return json.dumps(
                 {'articles': data})

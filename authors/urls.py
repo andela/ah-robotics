@@ -33,6 +33,8 @@ urlpatterns = [
     path('api/v1/', include(('authors.apps.profiles.urls',
                              'profile'), namespace='profiles')),
     path('api/v1/', include(('authors.apps.articles.urls',
-                             'articles'), namespace='articles'))
+                             'articles'), namespace='articles')),
+    path('api/v1/', include(('authors.apps.rating.urls',
+                             'rating'), namespace='rating'))
 ]
 
