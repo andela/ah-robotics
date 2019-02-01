@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     'authors.apps.articles',
     'taggit',
     'taggit_serializer',
-    'authors.apps.rating',
 ]
 
 MIDDLEWARE = [

@@ -26,7 +26,6 @@ class TestBase(APITestCase):
             }
         }
 
-
         self.client = APIClient()
         self.login_url = reverse('authentication:login_url')
         self.register_url = reverse('authentication:register_url')
@@ -36,7 +35,6 @@ class TestBase(APITestCase):
         self.reset_password_url = reverse(
             'authentication:reset_password',
             kwargs={"token": self.password_reset_token})
-        
 
         self.empty_payload = {
             "user": {}
@@ -135,12 +133,6 @@ class TestBase(APITestCase):
                 "password": "manu232#$$"
             }
         }
-        self.rating = {
-            "rating": {
-                "rating": 5
-            }
-        }
-        self.incorrectRating = self.rating['rating']['rating'] = 7
 
     def register_user(self, data):
         return self.client.post(
@@ -171,7 +163,7 @@ class TestBase(APITestCase):
             self.reset_password_url,
             data=data,
             format="json")
-   
+
     def user_login_req(self, data):
         return self.client.post(
             self.login_url,

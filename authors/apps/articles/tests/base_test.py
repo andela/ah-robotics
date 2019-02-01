@@ -65,13 +65,10 @@ class ArticleTestBase(APITestCase):
 
     def authorize_user(self, user_details):
         """Register and login user to obtain token"""
+        token = ""
         self.register_user(data=self.user)
         payload = self.login_a_user(data=user_details)
         self.client.credentials(HTTP_AUTHORIZATION='token ' + payload['token'])
-
-    def post_article_req(self, data):
-        """Create an article"""
-        return self.client.post(self.articles_url, data=data, format="json")
 
 
 class BaseReactionTestCase(ArticleTestBase):
