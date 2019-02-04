@@ -5,7 +5,7 @@ from authors.apps.profiles.models import UserProfile
 from .models import Comment
 
 
-class Commentserializer(serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
     """
     Create a serializer for the comments model
     """

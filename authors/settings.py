@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'authors.apps.profiles',
     'authors.apps.articles',
+    'authors.apps.favorites',
     'taggit',
     'taggit_serializer',
     'authors.apps.rating',
@@ -177,7 +178,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-
 APPEND_SLASH = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -193,7 +193,6 @@ AUTHENTICATION_BACKENDS = (
 )
 
 SITE_ID = 1
-
 
 CLOUDINARY = {
     'cloud_name': os.getenv('CLOUDINARY_NAME'),

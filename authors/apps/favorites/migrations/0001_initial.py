@@ -16,12 +16,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Rating',
+            name='Favorite',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('user_rating', models.FloatField()),
-                ('article', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rated_article', to='articles.Article')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rater', to=settings.AUTH_USER_MODEL)),
+                ('article', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='articles', to='articles.Article')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='users', to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

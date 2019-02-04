@@ -2,11 +2,11 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from cloudinary.models import CloudinaryField
+
 from authors.settings import AUTH_USER_MODEL
 from authors.apps.core.models import TimestampMixin
 from authors.apps.authentication.models import User
-
-from cloudinary.models import CloudinaryField
 
 
 class UserProfile(TimestampMixin, models.Model):
