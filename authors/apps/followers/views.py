@@ -7,7 +7,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 
-from .serializers import FollowerSerializer, FollowerInfoSerializer, FollowerListSerializer
+from .serializers import (FollowerSerializer,
+                         FollowerInfoSerializer,
+                        FollowerListSerializer)
 from .renderers import FollowerJsonRenderer, FollowerListJsonRenderer
 
 from .models import Follower
@@ -65,7 +67,7 @@ class RetrieveFollowing(ListCreateAPIView):
     """
     Enable Read operation on a single user instance
     """
-    #lookup_field = 'username'
+    
     queryset = Follower.objects.all()
     serializer_class = FollowerInfoSerializer
     renderer_classes = (FollowerJsonRenderer,)

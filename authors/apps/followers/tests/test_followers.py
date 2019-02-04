@@ -108,7 +108,7 @@ class FollowerTestCase(FollowerBaseTest):
         response = self.client.get(self.following_list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_list_of_following_users_withoutauth(self):
+    def test_get_list_of_following_users_without_auth(self):
         """
         User should not get a list of users that he is
         currently following without authentication
@@ -117,4 +117,23 @@ class FollowerTestCase(FollowerBaseTest):
         self.assertEqual(response.data['detail'],
                          "Authentication credentials were not provided.")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_list_of_followers_with_auth(self):
+        """
+        User can get a list of users that are following him
+        """
+        self.authorize_user(self.user)
+        response = self.client.get(self.followers_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    def test_get_list_of_followers_without_auth(self):
+        """
+        User should not get a list of users that are
+        currently following him/her without authentication
+        """
+        response = self.client.get(self.followers_url)
+        self.assertEqual(response.data['detail'],
+                         "Authentication credentials were not provided.")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    
 

@@ -30,6 +30,10 @@ class FollowerBaseTest(APITestCase):
             "username": "paulotieno"
         }
 
+        self.follow_user = {
+            "username": "tester"
+        }
+
         self.non_existent_user = {
             "username": "jameswan"
         }
@@ -52,6 +56,9 @@ class FollowerBaseTest(APITestCase):
         })
         self.following_list_url = reverse('followers:following_url', kwargs={
             "username": self.followed_user['username']
+        })
+        self.followers_url = reverse('followers:followers_url', kwargs={
+            "username": self.follow_user['username']
         })
 
     def register_user(self, data):
