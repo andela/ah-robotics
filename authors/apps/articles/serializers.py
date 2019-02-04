@@ -2,14 +2,12 @@ from rest_framework import serializers
 from django.db.models import Avg
 
 from authors.apps.profiles.serializers import AuthorSerializer
-from authors.apps.profiles.models import UserProfile
 from taggit_serializer.serializers import (
     TagListSerializerField, TaggitSerializer)
-
+from authors.apps.profiles.models import UserProfile
 from .models import Article, Reaction
-
-from .models import Article
 from ..rating.models import Rating
+
 
 class ArticleSerializers(TaggitSerializer, serializers.ModelSerializer):
     slug = serializers.CharField(read_only=True)
@@ -47,17 +45,18 @@ class ArticleSerializers(TaggitSerializer, serializers.ModelSerializer):
 
     def get_rating(self, obj):
         """Return an article rating"""
-        average_rating = Rating.objects.filter(article__slug=obj.slug).aggregate(Avg('user_rating'))
+        average_rating = Rating.objects.filter(
+            article__slug=obj.slug).aggregate(Avg('user_rating'))
         response = {"average_rating": average_rating['user_rating__avg']}
         if average_rating['user_rating__avg'] is None:
             average_rating['user_rating__avg'] = 0
             return response
-            
+
         return response
 
     class Meta:
         model = Article
-        fields = ('slug', 'title', 'description',
+        fields = ('id', 'slug', 'title', 'description',
                   'body', 'image', 'created_at', 'updated_at',
                   'author', 'tagList', 'rating')
 
