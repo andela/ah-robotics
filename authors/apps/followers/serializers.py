@@ -19,3 +19,13 @@ class FollowerInfoSerializer(serializers.BaseSerializer):
         return {
             'username': obj.followed_user.username,
         }
+
+class FollowerListSerializer(serializers.BaseSerializer):
+    """
+    Follower serializer to display the username of the follower
+    """
+    def to_representation(self, obj):
+        return {
+            'username': obj.user.username,
+        }
+

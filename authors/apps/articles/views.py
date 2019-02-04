@@ -80,7 +80,6 @@ class RetrieveUpdateDeleteArticle(RetrieveUpdateDestroyAPIView):
         Update an article
         """
         article = get_article(slug)
-
         article_data = request.data.get('article', {})
         serializer = self.serializer_class(
             article, data=article_data, partial=True, context={'request': request})

@@ -1,16 +1,22 @@
 from rest_framework.generics import (ListCreateAPIView,
-                                     DestroyAPIView)
+                                     DestroyAPIView,
+                                     RetrieveUpdateAPIView)
 from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
                                         IsAuthenticated)
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 
-from .serializers import FollowerSerializer, FollowerInfoSerializer
-from .renderers import FollowerJsonRenderer
+from .serializers import FollowerSerializer, FollowerInfoSerializer, FollowerListSerializer
+from .renderers import FollowerJsonRenderer, FollowerListJsonRenderer
 
 from .models import Follower
 from authors.apps.core.permissions import IsOwnerOrReadonly
 from authors.apps.authentication.models import User
+
+def user_not_found():
+    raise ValidationError(
+        {'error': 'No user found for the username given'})
 
 
 class ListCreateFollow(ListCreateAPIView):
@@ -51,6 +57,45 @@ class ListCreateFollow(ListCreateAPIView):
 
     def get(self, request):
         queryset = Follower.objects.filter(user=self.request.user)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RetrieveFollowing(ListCreateAPIView):
+    """
+    Enable Read operation on a single user instance
+    """
+    #lookup_field = 'username'
+    queryset = Follower.objects.all()
+    serializer_class = FollowerInfoSerializer
+    renderer_classes = (FollowerJsonRenderer,)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request,**kwargs):
+        username= kwargs.get('username')
+        """
+        Get userlist by using the username value
+        """
+        user = User.objects.filter(username=username).first()
+        if not user:
+            user_not_found()
+        following_list = Follower.objects.filter(user=user)
+        serializer = self.serializer_class(following_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    
+class FollowersView(ListCreateAPIView):
+    queryset = Follower.objects.all()
+    serializer_class = FollowerListSerializer
+    permission_classes = (IsAuthenticated,)
+    renderer_classes = (FollowerListJsonRenderer,)
+
+    def get(self, request, **kwargs):
+        username = kwargs.get('username')
+        user = User.objects.filter(username=username).first()
+        if not user:
+            user_not_found()
+        queryset = Follower.objects.filter(followed_user=user)
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
