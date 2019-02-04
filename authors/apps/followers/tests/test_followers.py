@@ -103,6 +103,8 @@ class FollowerTestCase(FollowerBaseTest):
         User can get a list of users that he is currently following
         """
         self.authorize_user(self.user)
+        self.register_user(self.user2)
+        self.client.post(self.follow_url, format='json')
         response = self.client.get(self.following_list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
