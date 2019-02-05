@@ -31,24 +31,11 @@ class TestBookmarkArticle(BookmarkTestBase):
 
     def test_bookmark_toggle_feature(self):
         """ Test for toggle between mark and unmark bookmark"""
-        response = self.post_article_req(self.article)
-        slug = response.data['slug']
-        url = reverse('bookmark:bookmark-article',
-                      kwargs={
-                          'slug': slug
-                      })
-        bookmark_response = self.client.post(url,
-                                             HTTP_AUTHORIZATION='token ' +
-                                             self.token1, format="json")
-        self.assertEqual(bookmark_response.status_code,
+        self.assertEqual(self.toogle_bookmark_feature()[0].status_code,
                          status.HTTP_201_CREATED)
-        self.assertEqual(bookmark_response.data['message'],
+        self.assertEqual(self.toogle_bookmark_feature()[0].data['message'],
                          'Article succesfully BOOKMARKED')
-
-        res_unmark = self.client.post(url,
-                                      HTTP_AUTHORIZATION='token ' +
-                                      self.token1, format="json")
-
-        self.assertEqual(res_unmark.status_code, status.HTTP_200_OK)
-        self.assertEqual(res_unmark.data['message'],
+        self.assertEqual(self.toogle_bookmark_feature()[1].status_code,
+                         status.HTTP_200_OK)
+        self.assertEqual(self.toogle_bookmark_feature()[1].data['message'],
                          'Bookmark succesfully DELETED')

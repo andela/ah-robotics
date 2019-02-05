@@ -72,3 +72,19 @@ class BookmarkTestBase(APITestCase):
             data=data,
             HTTP_AUTHORIZATION='token ' + self.token1,
             format="json")
+
+    def toogle_bookmark_feature(self):
+        """ Article bookmark toogle """
+        response = self.post_article_req(self.article)
+        # print(response.data)
+        url = reverse('bookmark:bookmark-article',
+                      kwargs={
+                          'slug': response.data['slug']
+                      })
+        bookmark_response = self.client.post(url,
+                                             HTTP_AUTHORIZATION='token ' +
+                                             self.token1, format="json")
+        res_unmark = self.client.post(url,
+                                      HTTP_AUTHORIZATION='token ' +
+                                      self.token1, format="json")
+        return (bookmark_response,  res_unmark)
