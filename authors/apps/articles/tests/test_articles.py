@@ -181,3 +181,19 @@ class TestArticle(ArticleTestBase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(created_slug, "the-one")
         self.assertEqual(len(response.data["tagList"]), 3)
+
+    def test_search_article_title_author_tags(self):
+        """
+        User should should receive search results based on author,
+        title and tags
+        """
+        self.authorize_user(self.user)
+        response = self.client.post(self.articles_url,
+                                    self.article, format='json')
+        created_slug = response.data['slug']
+        search_response = self.client.get(self.search_url
+                                + "?author=tester&title=The One&tagList=obi",
+                                format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(created_slug, "the-one")
+        self.assertEqual(len(search_response.data), 2)

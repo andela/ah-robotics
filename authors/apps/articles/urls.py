@@ -15,4 +15,5 @@ urlpatterns = [
     path('articles/<slug>/dislike/', views.ReactionView.as_view(
         model=Article, reaction_type=Reaction.DISLIKE),
         name='dislike-article'),
+    path('article/search/', views.ArticleList.as_view(), name='article-search')
 ]
