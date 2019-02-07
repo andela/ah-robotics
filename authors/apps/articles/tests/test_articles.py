@@ -196,4 +196,4 @@ class TestArticle(ArticleTestBase):
                                 format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(created_slug, "the-one")
-        self.assertEqual(len(search_response.data), 2)
+        self.assertEqual(len(search_response.data), 4)
