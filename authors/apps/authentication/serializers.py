@@ -54,7 +54,7 @@ class RegistrationSerializer(serializers.ModelSerializer, PasswordSerializer):
         return User.objects.create_user(**validated_data)
 
 
-class LoginSerializer(serializers.Serializer, PasswordSerializer):
+class LoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=255)
     username = serializers.CharField(max_length=255, read_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
@@ -93,7 +93,7 @@ class LoginSerializer(serializers.Serializer, PasswordSerializer):
         # `authenticate` will return `None`. Raise an exception in this case.
         if user is None:
             raise serializers.ValidationError(
-                'A user with this email and password was not found.'
+                'Incorrect email or password.'
             )
 
         # Django provides a flag on our `User` model called `is_active`. The

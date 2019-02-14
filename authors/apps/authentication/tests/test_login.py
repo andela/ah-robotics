@@ -19,7 +19,7 @@ class ForgotPasswordTestCase(TestBase):
         response = self.user_login_req(data=self.user_login)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['errors']['error'][0],
-                         "A user with this email and password was not found.")
+                         "Incorrect email or password.")
 
     def test_bad_email(self):
         """Test that a user cannot login with a bad email format"""
@@ -28,7 +28,7 @@ class ForgotPasswordTestCase(TestBase):
         response = self.user_login_req(data=self.user_login)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['errors']['error'][0],
-                         "A user with this email and password was not found.")
+                         "Incorrect email or password.")
 
     def test_wrong_pass(self):
         """Test that a user cannot login with the wrong password"""
@@ -36,5 +36,5 @@ class ForgotPasswordTestCase(TestBase):
         self.user_login["user"]["password"] = "bad_password"
         response = self.user_login_req(data=self.user_login)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data['errors']['password'][0],
-                         "Password must have letters, numbers and special characters")
+        self.assertEqual(response.data['errors']['error'][0],
+                         "Incorrect email or password.")

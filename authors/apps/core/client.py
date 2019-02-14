@@ -17,4 +17,4 @@ def get_password_reset_link(request, token):
 
     """
     domain = get_current_site(request).domain
-    return 'http://{}/api/v1/account/reset_password/{}'.format(domain, token)
+    return 'http://{}/reset_password/{}'.format(domain, token)
