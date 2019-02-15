@@ -5,10 +5,9 @@ from django.utils.html import strip_tags
 
 
 def send_email(request, details, token, subject):
-    sender = "roboticsah@gmail.com"
     current_site = get_current_site(request)
     verification_link = "http://" + current_site.domain + \
-        '/api/v1/users/verify/{}'.format(token)
+        '/verify/{}'.format(token)
     subject = subject
     message = render_to_string('email_verification.html', {
         'verification_link': verification_link,
@@ -17,7 +16,7 @@ def send_email(request, details, token, subject):
     })
     body_content = strip_tags(message)
     msg = EmailMultiAlternatives(
-        subject, body_content, sender, to=[
+        subject, body_content, to=[
             details['email']])
     msg.attach_alternative(message, "text/html")
     msg.send()
