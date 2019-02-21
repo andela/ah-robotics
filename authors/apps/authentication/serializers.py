@@ -55,7 +55,7 @@ class RegistrationSerializer(serializers.ModelSerializer, PasswordSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.CharField(max_length=255)
+    email = serializers.CharField(max_length=255, write_only=True)
     username = serializers.CharField(max_length=255, read_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
     token = serializers.CharField(max_length=128, read_only=True)
@@ -186,3 +186,8 @@ class ResetPasswordSerializer(serializers.Serializer, PasswordSerializer):
         max_length=128,
         min_length=8,
     )
+
+class SocialAuthSerializer(serializers.Serializer):
+    """Social authentication serializers."""
+    provider = serializers.CharField(max_length=255, required=True)
+    access_token = serializers.CharField(max_length=1024, required=True, trim_whitespace=True)
