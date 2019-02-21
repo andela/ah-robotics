@@ -129,7 +129,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         the token to be called by `user.token`
         """
         token = jwt.encode({
-            'id': self.pk,
             'email': self.email,
             'username': self.get_full_name,
             'iat': datetime.utcnow(),

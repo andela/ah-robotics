@@ -12,7 +12,6 @@ class ForgotPasswordTestCase(TestBase):
         self.register_user(data=self.user)
         response = self.user_login_req(data=self.user_login)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['email'], "lolisme2016@gmail.com")
 
     def test_login_unregistered_user(self):
         """Test that an unregistered user cannot login"""

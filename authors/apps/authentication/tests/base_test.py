@@ -1,3 +1,4 @@
+import os
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 import jwt
@@ -26,7 +27,6 @@ class TestBase(APITestCase):
             }
         }
 
-
         self.client = APIClient()
         self.login_url = reverse('authentication:login_url')
         self.register_url = reverse('authentication:register_url')
@@ -36,7 +36,12 @@ class TestBase(APITestCase):
         self.reset_password_url = reverse(
             'authentication:reset_password',
             kwargs={"token": self.password_reset_token})
-        
+        self.social_authentication_url = reverse(
+            'authentication:social_authentication')
+        self.google_access_token = os.getenv('GOOGLE_ACCESS_TOKEN')
+        self.facebook_access_token = os.getenv('FACEBOOK_ACCESS_TOKEN')
+        self.twitter_access_token = os.getenv('TWITTER_ACCESS_TOKEN')
+        self.twitter_access_token_secret = os.getenv('TWITTER_SECRET_TOKEN')
 
         self.empty_payload = {
             "user": {}
@@ -51,7 +56,7 @@ class TestBase(APITestCase):
         }
 
         self.user_resend = {
-            "user":{
+            "user": {
                 "email": "lolisme2016@gmail.com"
             }
         }
@@ -142,6 +147,25 @@ class TestBase(APITestCase):
         }
         self.incorrectRating = self.rating['rating']['rating'] = 7
 
+        self.invalid_provider = {
+            "provider": "google oauth",
+            "access_token": self.google_access_token
+
+        }
+        self.google_provider = {
+            "provider": "google-oauth2",
+            "access_token": self.google_access_token
+        }
+        self.facebook_provider = {
+            "provider": "facebook",
+            "access_token": self.facebook_access_token
+        }
+        self.twitter_provider = {
+            "provider": "twitter",
+            "access_token": self.twitter_access_token,
+            "access_token_secret": self.twitter_access_token_secret
+        }
+
     def register_user(self, data):
         return self.client.post(
             self.register_url,
@@ -171,9 +195,15 @@ class TestBase(APITestCase):
             self.reset_password_url,
             data=data,
             format="json")
-   
+
     def user_login_req(self, data):
         return self.client.post(
             self.login_url,
+            data=data,
+            format="json")
+
+    def social_login_req(self, data):
+        return self.client.post(
+            self.social_authentication_url,
             data=data,
             format="json")

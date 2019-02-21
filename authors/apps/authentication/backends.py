@@ -51,7 +51,7 @@ class JWTAuthentication(BaseAuthentication):
             else:
                 raise exceptions.AuthenticationFailed(str(e))
         try:
-            user = User.objects.get(pk=payload['id'])
+            user = User.objects.get(email=payload['email'])
         except user.DoesNotExist:
             raise exceptions.AuthenticationFailed('No user found')
         if not user.is_active:

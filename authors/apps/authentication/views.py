@@ -2,22 +2,20 @@ import os
 import re
 
 import jwt
-from allauth.socialaccount.providers.facebook.views import \
-    FacebookOAuth2Adapter
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
+from datetime import datetime, timedelta
+from social_django.utils import load_strategy, load_backend
+from social_core.exceptions import MissingBackend, AuthAlreadyAssociated
+from social_core.backends.oauth import BaseOAuth1, BaseOAuth2
 
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.db import IntegrityError
 
-from rest_auth.registration.views import SocialLoginView
-from rest_auth.social_serializers import TwitterLoginSerializer
 
 from rest_framework import exceptions
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -30,7 +28,7 @@ from .models import User
 from .renderers import UserJSONRenderer
 from .serializers import (
     LoginSerializer, RegistrationSerializer, UserSerializer,
-    ForgotPasswordSerializer, ResetPasswordSerializer
+    ForgotPasswordSerializer, ResetPasswordSerializer, SocialAuthSerializer
 )
 from .utils import send_email
 
@@ -290,19 +288,71 @@ class ResetPasswordAPIView(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
-class FacebookLogin(SocialLoginView):
-    """Facebook Authentication Endpoint"""
-    adapter_class = FacebookOAuth2Adapter
+class SocialAuthView(generics.CreateAPIView):
+    """Social Authentication class"""
+    permission_classes = (AllowAny,)
+    serializer_class = SocialAuthSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        provider = request.data['provider']
+        strategy = load_strategy(request)
+        authenticated_user = request.user if not request.user.is_anonymous else None
+
+        try: 
+            backendImplementation = load_backend(
+                strategy=strategy,
+                name=provider,
+                redirect_uri=None
+            )
+            
+            if isinstance(backendImplementation, BaseOAuth1):
+                if "access_token_secret" in request.data:
+                    token = {
+                        'oauth_token': request.data['access_token'],
+                        'oauth_token_secret':
+                        request.data['access_token_secret']
+                    }
+                else:
+                    return Response({'error':
+                                    'Please provide a secret token'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+            elif isinstance(backendImplementation, BaseOAuth2):
+                token = serializer.data.get('access_token')
+        except MissingBackend:
+            return Response({
+                'error': 'Please provide a valid social provider'
+                }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = backendImplementation.do_auth(token, user=authenticated_user)
+        except (AuthAlreadyAssociated, IntegrityError):
+            return Response({
+                "errors": "You are already logged in with another service"},
+                status=status.HTTP_400_BAD_REQUEST)
+        except BaseException:
+            return Response({
+                "errors": "Invalid token"},
+                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        if user:
+            user.is_active = True
+            username = user.username
+            email = user.email
+
+        date = datetime.now() + timedelta(days=20)
+        payload = {
+            'email': email,
+            'username': username,
+            'exp': int(date.strftime('%s')),
+        }
 
 
-class TwitterLogin(SocialLoginView):
-    """Twitter Authentication Endpoint"""
-    serializer_class = TwitterLoginSerializer
-    adapter_class = TwitterOAuthAdapter
+        user_token = jwt.encode(
+            payload, settings.SECRET_KEY, algorithm='HS256')
 
 
-class GoogleLogin(SocialLoginView):
-    """Google Authentication Endpoint"""
-    adapter_class = GoogleOAuth2Adapter
-    client_class = OAuth2Client
-    callback_url = os.getenv('GOOGLE_CALLBACK_URL')
+        serializer = UserSerializer(user)
+        serialized_details = serializer.data
+        serialized_details["token"] = user_token
+        return Response(serialized_details, status.HTTP_200_OK)
