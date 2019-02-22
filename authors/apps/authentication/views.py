@@ -292,6 +292,7 @@ class SocialAuthView(generics.CreateAPIView):
     """Social Authentication class"""
     permission_classes = (AllowAny,)
     serializer_class = SocialAuthSerializer
+    # renderer_classes = (UserJSONRenderer,)
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -355,4 +356,15 @@ class SocialAuthView(generics.CreateAPIView):
         serializer = UserSerializer(user)
         serialized_details = serializer.data
         serialized_details["token"] = user_token
+        user = {
+            "email": serialized_details["email"],
+            "username": serialized_details["email"].split("@")[0],
+            "password": os.getenv("SECRET_PASS"),
+        }
+        reg_user = User.objects.filter(email=serialized_details["email"])
+        if not reg_user:
+            reg_serializer = RegistrationSerializer(data=user)
+            reg_serializer.is_valid(raise_exception=True)
+            reg_serializer.save()
+
         return Response(serialized_details, status.HTTP_200_OK)
