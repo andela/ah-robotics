@@ -105,7 +105,11 @@ class RetrieveUpdateDeleteArticle(RetrieveUpdateDestroyAPIView):
 
         article_data = request.data
         serializer = self.serializer_class(
-            instance=article, data=article_data, partial=True)
+                    instance=article,
+                    data=article_data,
+                    partial=True,
+                    context={'request': request}
+                    )
 
         if serializer.is_valid():
             self.check_object_permissions(request, article)

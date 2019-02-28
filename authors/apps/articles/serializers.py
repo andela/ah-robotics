@@ -44,6 +44,10 @@ class ArticleSerializer(TaggitSerializer, serializers.ModelSerializer):
     favorited = serializers.SerializerMethodField(read_only=True)
     favorite_count = serializers.SerializerMethodField(read_only=True)
     read_time = serializers.SerializerMethodField()
+    like_status = serializers.SerializerMethodField()
+    dislike_status = serializers.SerializerMethodField()
+    likes = serializers.SerializerMethodField()
+    dislikes = serializers.SerializerMethodField()
 
     def get_author(self, obj):
         """Get the profile of the author of the article"""
@@ -88,12 +92,31 @@ class ArticleSerializer(TaggitSerializer, serializers.ModelSerializer):
         read_time = str(datetime.timedelta(minutes=time))
         return read_time
 
+    def get_likes(self, instance):
+        return instance.reaction.likes().count()
+
+    def get_dislikes(self, instance):
+       return instance.reaction.dislikes().count()
+
+    def get_like_status(self,instance):
+        request = self.context.get("request")
+        if instance.reaction.filter(user_id=request.user.id,reaction=1):
+           return True
+        return False
+        
+    def get_dislike_status(self,instance):
+        request = self.context.get("request")
+        if instance.reaction.filter(user_id=request.user.id,reaction=-1):
+           return True
+        return False
+
+
     class Meta:
         model = Article
         fields = ('slug', 'title', 'description',
                   'body', 'image', 'created_at', 'updated_at',
                   'favorited', 'favorite_count', 'author', 'tagList',
-                  'rating', 'read_time')
+                  'rating', 'read_time', 'likes', 'dislikes','like_status','dislike_status')
 
 
 class ReactionSerializer(serializers.ModelSerializer):
